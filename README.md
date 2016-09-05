@@ -3,13 +3,54 @@ Weight is a neural network library written in Go that focuses on portability and
 
 ## Example usage
 
-Here is an example of a simple network with one hidden layer of 30 neurons. Note that this library does not include the MNIST data files but you can download them from http://yann.lecun.com/exdb/mnist/.
+Here is an example of a simple network with one hidden layer of 30 neurons that we will train to classify digits from MNIST (http://yann.lecun.com/exdb/mnist/).
 
 ```go
-//TODO include code from examples/readme  
-```
+//Create a simple neural network (1 hidden layer)
+net, _ := layers.NewSequentialNet(
+    layers.NewDenseLayer([]int{28, 28}, []int{30}),
+    layers.NewSigmoidLayer(30),
+    layers.NewDenseLayer([]int{30}, []int{10}),
+    layers.NewSoftmaxLayer(10),
+)
 
-After some seconds it should have calculated all 5 epochs and the test accuracy should be around 92%. This result is really bad for MNIST, but with a convolutional neural network we can achieve close to 99%.
+//Setup learning configuration
+config := training.LearningConfig{
+    BatchSize:         16,
+    Epochs:            5,
+    LearningRateStart: 0.5,
+    LearningRateEnd:   0.1,
+    Momentum:          0.9,
+    Method:            training.Momentum,
+}
+
+//Open path where we have the mnist data files (`train-images-idx3-ubyte.gz`, `train-labels-idx1-ubyte.gz`, `t10k-images-idx3-ubyte.gz` and `t10k-labels-idx1-ubyte.gz`). In the example in examples/readme, the files will be downloaded automatically.
+//mnist.Open returns a PairSet, that contains the TrainSet and the corresponding TestSet
+data, err := mnist.Open(".")
+if err != nil {
+    panic(err)
+}
+defer data.Close()
+
+//Create a cost function. As we want to classify and we have a softmax as the last layer, we use a cross entropy function. We use 10 inputs as we are classifying digits.
+costFunc := costs.NewCrossEntropyCostFunction(10)
+
+//Create a trainer. It is the object that will train the network with the given data and configuration.
+trainer := training.NewBPTrainer(config, data, net, costFunc)
+
+//Start training.
+err = trainer.Train()
+if err != nil {
+    panic(err)
+}
+
+//Get final accuracy on test data
+accuracy, _ := weight.TestLayer(net, data.TestSet)
+fmt.Printf("Final accuracy: %.4f \n", accuracy)
+```
+You can find and run this code in `examples/readme`. It will download the MNIST dataset if it can't find it locally, and this can take some minutes.
+
+The training takes some seconds and the final accuracy should be around 92%. This result is really bad for MNIST, but with a convolutional neural network we can achieve close to 99%.
 
 Here we are using several layers, a dataset, a cost function and a trainer. All of these elements are interface implementations so it is really easy to create and use custom ones. The only structure you will provably need to implement to use this library in your project is a `DataSet`, the object that returns data and decides if the output of the network is correct or not (see loaders/mnist and loaders/cifar for example implementations of `DataSet`).
 
