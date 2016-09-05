@@ -1,0 +1,28 @@
+{
+  "name": "WeightHttpPanel",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "http-server ./ --cors",
+    "build": "webpack",
+    "build-prod": "webpack -p"
+  },
+  "dependencies": {
+    "babel-core": "^6.5.1",
+    "babel-loader": "^6.2.2",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "chart.js": "^2.1.0",
+    "material-ui": "^0.15.1",
+    "react": "^15.0.2",
+    "react-chartjs": "git://github.com/venari/react-chartjs.git#chartjs-v2",
+    "react-dimensions": "^1.2.0",
+    "react-dom": "^15.0.2",
+    "react-tap-event-plugin": "^1.0.0",
+    "webpack": "^1.12.2",
+    "whatwg-fetch": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-polyfill": "^6.9.1",
+    "webpack": "^1.13.1"
+  }
+}

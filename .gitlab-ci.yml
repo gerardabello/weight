@@ -1,0 +1,39 @@
+image: golang:1.6
+
+stages:
+    - setup
+    - build
+    - test
+
+before_script:
+    - mkdir -p /gopath/src/gitlab.com/gerardabello
+    - export GOPATH=/gopath
+    - cp -r ../weight/ /gopath/src/gitlab.com/gerardabello/
+    - cd /gopath/src/gitlab.com/gerardabello/weight
+    - go get github.com/gorilla/websocket
+    - go get github.com/stretchr/testify/assert
+
+build:
+    stage: build
+    script:
+        - go install
+        
+build-tests:
+    stage: build
+    script:
+        - go test -c -i
+        - go test -c -i ./layers
+        - go test -c -i ./tensor
+        - go test -c -i ./debug
+        - go test -c -i ./costs
+        - go test -c -i ./training
+
+test-all:
+    stage: test
+    script:
+        - go test -v -cover
+        - go test -v -cover ./layers
+        - go test -v -cover ./tensor
+        - go test -v -cover ./debug
+        - go test -v -cover ./costs
+        - go test -v -cover ./training
