@@ -12,12 +12,14 @@ before_script:
     - cd /gopath/src/gitlab.com/gerardabello/weight
     - go get github.com/gorilla/websocket
     - go get github.com/stretchr/testify/assert
+    - go get github.com/gonum/blas
+    - go get github.com/gonum/blas/blas64
 
 build:
     stage: build
     script:
         - go install
-        
+
 build-tests:
     stage: build
     script:
