@@ -1,6 +1,7 @@
 package layers
 
 import (
+	"bytes"
 	"math"
 	"math/rand"
 	"testing"
@@ -137,5 +138,28 @@ func TestDenseBackPropagation(t *testing.T) {
 	}
 
 	assert.InDeltaSlice([]float64{0.0698116, -0.08931546, 0.11163621, -0.04026629}, bp.Values, 1e-3, "Expected backpropagation")
+
+}
+
+func TestMarshalDense(t *testing.T) {
+	assert := assert.New(t)
+
+	fcl := NewDenseLayer([]int{3, 3, 6}, []int{5, 5})
+
+	var b bytes.Buffer
+
+	fcl.Marshal(&b)
+
+	nfcl, err := UnmarshalDenseLayer(&b)
+
+	assert.NoError(err, "Error while unmarshaling")
+
+	assert.InDeltaSlice(nfcl.weights.Values, fcl.weights.Values, 1e-6, "Expected same weights")
+	assert.InDeltaSlice(nfcl.weights.Size, fcl.weights.Size, 1e-6, "Expected same weights size")
+	assert.InDeltaSlice(nfcl.bias.Values, fcl.bias.Values, 1e-6, "Expected same bias")
+	assert.InDeltaSlice(nfcl.bias.Size, fcl.bias.Size, 1e-6, "Expected same bias size")
+
+	assert.InDeltaSlice(nfcl.GetInputSize(), fcl.GetInputSize(), 1e-6, "Expected same input size")
+	assert.InDeltaSlice(nfcl.GetOutputSize(), fcl.GetOutputSize(), 1e-6, "Expected same output size")
 
 }

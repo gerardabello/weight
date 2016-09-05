@@ -1,6 +1,9 @@
 package layers
 
 import (
+	"archive/tar"
+	"io"
+
 	"gitlab.com/gerardabello/weight"
 	"gitlab.com/gerardabello/weight/tensor"
 )
@@ -64,4 +67,22 @@ func (l *LeakyReLULayer) BackPropagate(err *tensor.Tensor) (*tensor.Tensor, erro
 	}
 	l.mutex.Unlock()
 	return &l.propagation, nil
+}
+
+func (l *LeakyReLULayer) Marshal(writer io.Writer) error {
+	tarfile := tar.NewWriter(writer)
+	defer tarfile.Close()
+
+	//save info
+	err := writeInfoTar(
+		tarfile,
+		&map[string]interface{}{
+			"input": l.GetInputSize(),
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -1,7 +1,9 @@
 package layers
 
 import (
+	"archive/tar"
 	"fmt"
+	"io"
 	"math"
 
 	"gitlab.com/gerardabello/weight"
@@ -114,4 +116,22 @@ func (l *SoftmaxLayer) BackPropagate(err *tensor.Tensor) (*tensor.Tensor, error)
 
 	l.mutex.Unlock()
 	return &l.propagation, nil
+}
+
+func (l *SoftmaxLayer) Marshal(writer io.Writer) error {
+	tarfile := tar.NewWriter(writer)
+	defer tarfile.Close()
+
+	//save info
+	err := writeInfoTar(
+		tarfile,
+		&map[string]interface{}{
+			"input": l.GetInputSize(),
+		},
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

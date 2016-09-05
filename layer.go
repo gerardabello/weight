@@ -1,6 +1,10 @@
 package weight
 
-import "gitlab.com/gerardabello/weight/tensor"
+import (
+	"io"
+
+	"gitlab.com/gerardabello/weight/tensor"
+)
 
 //Layer is any object that accepts tensor.Tensor and returns tensor.Tensor.
 //Each tensor.Tensor has a shape specified by GetSize. Layers only accept a specific shape. If any shape does not match the requirements the Layer will return error on Activate.
@@ -11,6 +15,14 @@ type Layer interface {
 	Activate(input *tensor.Tensor) (*tensor.Tensor, error)
 	GetInputSize() []int
 	GetOutputSize() []int
+}
+
+//MarshalLayer is a layer than can be marshaled
+type MarshalLayer interface {
+	Layer
+
+	GetName() string
+	Marshal(io.Writer) error
 }
 
 //EnslaverLayer is a layer than can create slaves of itself
