@@ -77,6 +77,5 @@ Weight uses the struct `Tensor` to pass activations between layers. See `tensor/
 * Add way to save and load networks (marshaling)
 * Add GPU computations
 * Allow to configure initialization of parameters
-* Automatically download common datasets like MNIST or CIFAR
 * Compute backpropagation using col2im
 * More unit testing
