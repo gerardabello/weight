@@ -15,12 +15,13 @@ type FFNode struct {
 
 	parents []*FFNode
 
+    //Could be derived from the 'parents' array, but it would be slow to obtain them every time
 	//Should be buffered channels of size 1
 	inputs  []chan *tensor.Tensor //come from parents
 	outputs []chan *tensor.Tensor //come from childs
 
-	input *tensor.Tensor
-	gerr  *tensor.Tensor
+	input *tensor.Tensor  //tensor to store the sum of incoming inputs on Activate()
+	gradientError  *tensor.Tensor  //tensor to store the sum of incoming gradient errors on BackPropagate()
 }
 
 func (n *FFNode) ID() string {
@@ -39,6 +40,7 @@ func (n *FFNode) Activate() {
 		}
 	}
 
+    //Create a tensor if it doesn't exist
 	if n.input == nil {
 		n.input = tensor.NewTensor(n.layer.GetInputSize()...)
 	} else {
@@ -50,11 +52,13 @@ func (n *FFNode) Activate() {
 		panic(err)
 	}
 
+    //The undelying layer does the actual computation
 	out, err := n.layer.Activate(n.input)
 	if err != nil {
 		panic(err)
 	}
 
+    //Send to all childs
 	for i := 0; i < len(n.outputs); i++ {
 		n.outputs[i] <- out
 	}
@@ -64,31 +68,34 @@ func (n *FFNode) Activate() {
 func (n *FFNode) BackPropagate() {
 	nc := len(n.outputs)
 
-	gerrs := make([]*tensor.Tensor, nc)
+	gradientErrors := make([]*tensor.Tensor, nc)
 
 	for i := 0; i < nc; i++ {
-		gerrs[i] = <-n.outputs[i]
-		if !gerrs[i].HasSize(n.layer.GetOutputSize()) {
+		gradientErrors[i] = <-n.outputs[i]
+		if !gradientErrors[i].HasSize(n.layer.GetOutputSize()) {
 			panic("One of errors to node has not the correct size")
 		}
 	}
 
-	if n.gerr == nil {
-		n.gerr = tensor.NewTensor(n.layer.GetOutputSize()...)
+    //Create a tensor if it doesn't exist
+	if n.gradientError == nil {
+		n.gradientError = tensor.NewTensor(n.layer.GetOutputSize()...)
 	} else {
-		n.gerr.Zero(0)
+		n.gradientError.Zero(0)
 	}
 
-	err := n.gerr.Add(gerrs...)
+	err := n.gradientError.Add(gradientErrors...)
 	if err != nil {
 		panic(err)
 	}
 
-	prop, err := n.layer.(weight.BPLearnerLayer).BackPropagate(n.gerr)
+    //The undelying layer does the actual computation
+	prop, err := n.layer.(weight.BPLearnerLayer).BackPropagate(n.gradientError)
 	if err != nil {
 		panic(err)
 	}
 
+    //Send to all parents
 	for i := 0; i < len(n.inputs); i++ {
 		n.inputs[i] <- prop
 	}
@@ -98,8 +105,8 @@ func (n *FFNode) BackPropagate() {
 type FFNet struct {
 	id string
 
-	start chan *tensor.Tensor
-	end   chan *tensor.Tensor
+	input chan *tensor.Tensor
+	output   chan *tensor.Tensor
 
 	startNode *FFNode
 	endNode   *FFNode
@@ -158,13 +165,16 @@ func (n *FFNet) Activate(input *tensor.Tensor) (*tensor.Tensor, error) {
 		return nil, errors.New("FFNet is not finished, use End() to finish it before using it")
 	}
 
+    //Call all nodes concurrently
 	for i := range n.nodes {
 		go n.nodes[i].Activate()
 	}
 
-	n.start <- input
+    //Send the data to the starting node
+	n.input <- input
 
-	return <-n.end, nil
+    //Wait for the result to be available and return it
+	return <-n.output, nil
 }
 
 func (n *FFNet) BackPropagate(input *tensor.Tensor) (*tensor.Tensor, error) {
@@ -172,13 +182,16 @@ func (n *FFNet) BackPropagate(input *tensor.Tensor) (*tensor.Tensor, error) {
 		return nil, errors.New("FFNet is not finished, use End() to finish it before using it")
 	}
 
+    //Call all nodes concurrently
 	for i := range n.nodes {
 		go n.nodes[i].BackPropagate()
 	}
 
-	n.end <- input
+    //Send the data to the starting node
+	n.output <- input
 
-	return <-n.start, nil
+    //Wait for the result to be available and return it
+	return <-n.input, nil
 }
 
 func (n *FFNet) AddLayer(layer weight.Layer, parents ...string) error {
@@ -201,9 +214,9 @@ func (n *FFNet) AddLayer(layer weight.Layer, parents ...string) error {
 
 	if len(n.nodes) == 0 {
 		//First node
-		n.start = make(chan *tensor.Tensor, 1)
+		n.input = make(chan *tensor.Tensor, 1)
 		n.startNode = node
-		node.inputs = append(node.inputs, n.start)
+		node.inputs = append(node.inputs, n.input)
 	} else {
 		if len(parents) == 0 {
 			return errors.New("No parent especified")
@@ -258,10 +271,10 @@ func (n *FFNet) setParent(node *FFNode, parent *FFNode) error {
 //End closes the network
 func (n *FFNet) End() error {
 	last := n.nodes[len(n.nodes)-1]
-	n.end = make(chan *tensor.Tensor, 1)
+	n.output = make(chan *tensor.Tensor, 1)
 	n.endNode = last
 
-	last.outputs = []chan *tensor.Tensor{n.end}
+	last.outputs = []chan *tensor.Tensor{n.output}
 
 	n.finished = true
 
