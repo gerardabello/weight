@@ -15,13 +15,13 @@ type FFNode struct {
 
 	parents []*FFNode
 
-    //Could be derived from the 'parents' array, but it would be slow to obtain them every time
+	//Could be derived from the 'parents' array, but it would be slow to obtain them every time
 	//Should be buffered channels of size 1
 	inputs  []chan *tensor.Tensor //come from parents
 	outputs []chan *tensor.Tensor //come from childs
 
-	input *tensor.Tensor  //tensor to store the sum of incoming inputs on Activate()
-	gradientError  *tensor.Tensor  //tensor to store the sum of incoming gradient errors on BackPropagate()
+	input         *tensor.Tensor //tensor to store the sum of incoming inputs on Activate()
+	gradientError *tensor.Tensor //tensor to store the sum of incoming gradient errors on BackPropagate()
 }
 
 func (n *FFNode) ID() string {
@@ -40,7 +40,7 @@ func (n *FFNode) Activate() {
 		}
 	}
 
-    //Create a tensor if it doesn't exist
+	//Create a tensor if it doesn't exist
 	if n.input == nil {
 		n.input = tensor.NewTensor(n.layer.GetInputSize()...)
 	} else {
@@ -52,13 +52,13 @@ func (n *FFNode) Activate() {
 		panic(err)
 	}
 
-    //The undelying layer does the actual computation
+	//The undelying layer does the actual computation
 	out, err := n.layer.Activate(n.input)
 	if err != nil {
 		panic(err)
 	}
 
-    //Send to all childs
+	//Send to all childs
 	for i := 0; i < len(n.outputs); i++ {
 		n.outputs[i] <- out
 	}
@@ -77,7 +77,7 @@ func (n *FFNode) BackPropagate() {
 		}
 	}
 
-    //Create a tensor if it doesn't exist
+	//Create a tensor if it doesn't exist
 	if n.gradientError == nil {
 		n.gradientError = tensor.NewTensor(n.layer.GetOutputSize()...)
 	} else {
@@ -89,13 +89,13 @@ func (n *FFNode) BackPropagate() {
 		panic(err)
 	}
 
-    //The undelying layer does the actual computation
+	//The undelying layer does the actual computation
 	prop, err := n.layer.(weight.BPLearnerLayer).BackPropagate(n.gradientError)
 	if err != nil {
 		panic(err)
 	}
 
-    //Send to all parents
+	//Send to all parents
 	for i := 0; i < len(n.inputs); i++ {
 		n.inputs[i] <- prop
 	}
@@ -105,8 +105,8 @@ func (n *FFNode) BackPropagate() {
 type FFNet struct {
 	id string
 
-	input chan *tensor.Tensor
-	output   chan *tensor.Tensor
+	input  chan *tensor.Tensor
+	output chan *tensor.Tensor
 
 	startNode *FFNode
 	endNode   *FFNode
@@ -165,15 +165,15 @@ func (n *FFNet) Activate(input *tensor.Tensor) (*tensor.Tensor, error) {
 		return nil, errors.New("FFNet is not finished, use End() to finish it before using it")
 	}
 
-    //Call all nodes concurrently
+	//Call all nodes concurrently
 	for i := range n.nodes {
 		go n.nodes[i].Activate()
 	}
 
-    //Send the data to the starting node
+	//Send the data to the starting node
 	n.input <- input
 
-    //Wait for the result to be available and return it
+	//Wait for the result to be available and return it
 	return <-n.output, nil
 }
 
@@ -182,15 +182,15 @@ func (n *FFNet) BackPropagate(input *tensor.Tensor) (*tensor.Tensor, error) {
 		return nil, errors.New("FFNet is not finished, use End() to finish it before using it")
 	}
 
-    //Call all nodes concurrently
+	//Call all nodes concurrently
 	for i := range n.nodes {
 		go n.nodes[i].BackPropagate()
 	}
 
-    //Send the data to the starting node
+	//Send the data to the starting node
 	n.output <- input
 
-    //Wait for the result to be available and return it
+	//Wait for the result to be available and return it
 	return <-n.input, nil
 }
 
