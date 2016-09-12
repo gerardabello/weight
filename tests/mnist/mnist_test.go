@@ -15,6 +15,24 @@ import (
 	"gitlab.com/gerardabello/weight/training"
 )
 
+func TestMNISTLeNet1Fast(t *testing.T) {
+
+	net, err := layers.NewSequentialNet(
+		layers.NewReshaperLayer([]int{28, 28}, []int{28, 28, 1}),
+		layers.NewCRPBlock([]int{28, 28, 1}, 1, 8),
+		layers.NewDenseLayer([]int{14, 14, 8}, []int{200}),
+		layers.NewReLULayer(200),
+		layers.NewDenseLayer([]int{200}, []int{10}),
+		layers.NewSoftmaxLayer(10),
+	)
+
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	testLearnMNIST(t, net, training.LearningConfig{BatchSize: 12, Epochs: 2, LearningRateStart: 0.001, LearningRateEnd: 0.0001, WeightDecay: 0.0001, Method: training.Adam}, 0.96)
+}
+
 func TestMNISTLeNet2(t *testing.T) {
 
 	if testing.Short() {
@@ -37,8 +55,11 @@ func TestMNISTLeNet2(t *testing.T) {
 	testLearnMNIST(t, net, training.LearningConfig{BatchSize: 32, Epochs: 4, LearningRateStart: 0.001, LearningRateEnd: 0.0001, WeightDecay: 0.0001, Method: training.Adam}, 0.985)
 }
 
-//TODO this is unstable. check why.
 func TestMNISTLeNet3(t *testing.T) {
+
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
 
 	cl0, err := layers.NewSquareConvolutionalLayer(28, 1, 16, 2, 1, 2)
 	if err != nil {
@@ -124,6 +145,9 @@ func TestMNISTConvTF(t *testing.T) {
 }
 
 func TestMNISTCaffe(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
 
 	cl0, err := layers.NewSquareConvolutionalLayer(28, 1, 20, 2, 1, 0)
 	if err != nil {
@@ -202,8 +226,8 @@ func TestMNISTDense(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
-	config := training.LearningConfig{BatchSize: 40, Epochs: 30, WeightDecay: 0.001, Method: training.AdaDelta}
-	testLearnMNIST(t, net, config, 0.96)
+	config := training.LearningConfig{BatchSize: 12, Epochs: 2, LearningRateStart: 0.001, LearningRateEnd: 0.001, Method: training.Adam}
+	testLearnMNIST(t, net, config, 0.94)
 }
 
 func TestMNISTLinear(t *testing.T) {
@@ -221,8 +245,8 @@ func TestMNISTLinear(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
-	config := training.LearningConfig{BatchSize: 40, Epochs: 30, WeightDecay: 0.001, Method: training.AdaDelta}
-	testLearnMNIST(t, net, config, 0.9)
+	config := training.LearningConfig{BatchSize: 12, Epochs: 10, LearningRateStart: 0.001, LearningRateEnd: 0.001, Method: training.Adam}
+	testLearnMNIST(t, net, config, 0.91)
 }
 
 func TestMNISTFullyDeep(t *testing.T) {

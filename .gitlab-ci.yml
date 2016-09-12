@@ -30,7 +30,7 @@ build-tests:
         - go test -c -i ./costs
         - go test -c -i ./training
 
-test-all:
+test-basic:
     stage: test
     script:
         - go test -v -cover
@@ -39,3 +39,12 @@ test-all:
         - go test -v -cover ./debug
         - go test -v -cover ./costs
         - go test -v -cover ./training
+
+test-net-accuracy:
+    stage: test
+    script:
+        - wget http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz -P ./tests/mnist
+        - wget http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz -P ./tests/mnist
+        - wget http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz -P ./tests/mnist
+        - wget http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz -P ./tests/mnist
+        - go test -v -short ./tests/mnist
