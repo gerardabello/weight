@@ -47,4 +47,4 @@ test-net-accuracy:
         - wget http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz -P ./tests/mnist
         - wget http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz -P ./tests/mnist
         - wget http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz -P ./tests/mnist
-        - go test -v -short ./tests/mnist
+        - go test -v -short ./tests/mnist --timeout 30m
