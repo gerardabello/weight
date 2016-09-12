@@ -66,6 +66,11 @@ func (t *Tensor) DimToFlat(index ...int) int {
 	if len(index) != len(t.Size) {
 		panic("Index dimensions do not match Tensor dimensions")
 	}
+	for i := 0; i < len(index); i++ {
+		if index[i] < 0 || index[i] >= t.Size[i] {
+			panic("Index out of bounds")
+		}
+	}
 
 	/*The idea behind this algorithm:
 	  pos is the position we want to calculate
@@ -95,9 +100,6 @@ func (t *Tensor) DimToFlat(index ...int) int {
 
 	pos := 0
 	for i := 0; i < len(index); i++ {
-		if index[i] < 0 || index[i] >= t.Size[i] {
-			panic("Index out of bounds")
-		}
 		pos += t.tmpStrides[i] * index[i]
 	}
 
@@ -142,6 +144,16 @@ func (t *Tensor) Copy() *Tensor {
 
 //SetSize sets the size of Tensor and allocates the necessary memory
 func (t *Tensor) Allocate(size ...int) {
+	if len(size) == 0 {
+		panic("Allocate expects at least one dimension")
+	}
+
+	for i := 0; i < len(size); i++ {
+		if size[i] <= 0 {
+			panic("Allocating a slice with a dimension of size zero or negative is not allowed")
+		}
+	}
+
 	t.Size = size
 	t.Values = make([]float64, SizeLength(size))
 	t.calcTmpStrides()

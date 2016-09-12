@@ -10,13 +10,80 @@ import (
 func TestAllocate(t *testing.T) {
 	assert := assert.New(t)
 
-	assert.Equal(false, true, "Test not implemented")
+	t1 := Tensor{}
+	t1.Allocate(3)
+	assert.EqualValues(3, len(t1.Values), "Lenght of underlying array should be the same as allocated size")
+	assert.EqualValues(1, len(t1.Size), "Lenght of underlying size array should be the same as allocated dimensions")
+
+	t2 := Tensor{}
+	t2.Allocate(3, 3)
+	assert.EqualValues(9, len(t2.Values), "Lenght of underlying array should be the same as allocated size")
+	assert.EqualValues(2, len(t2.Size), "Lenght of underlying size array should be the same as allocated dimensions")
+
+	t5 := Tensor{}
+	t5.Allocate(3, 3, 1, 2, 4)
+	assert.EqualValues(72, len(t5.Values), "Lenght of underlying array should be the same as allocated size")
+	assert.EqualValues(5, len(t5.Size), "Lenght of underlying size array should be the same as allocated dimensions")
+
+	assert.Panics(func() {
+		tp1 := Tensor{}
+		tp1.Allocate(0)
+	}, "Allocate with zero size should panic")
+
+	assert.Panics(func() {
+		tp2 := Tensor{}
+		tp2.Allocate(1, 3, 6, 0, 2)
+	}, "Allocate with a zero size dimension should panic")
+
+	assert.Panics(func() {
+		tp3 := Tensor{}
+		tp3.Allocate()
+	}, "Allocate with no dimensions should panic")
+
+	assert.Panics(func() {
+		tp4 := Tensor{}
+		tp4.Allocate(-1)
+	}, "Allocate with negative size should panic")
+
+	assert.Panics(func() {
+		tp5 := Tensor{}
+		tp5.Allocate(1, 3, -2, -1, 2)
+	}, "Allocate with a negative size dimension should panic")
+
 }
 
 func TestDimToFlat(t *testing.T) {
 	assert := assert.New(t)
+	t1 := NewTensor(5)
+	assert.EqualValues(3, t1.DimToFlat(3), "Expected value")
+	assert.EqualValues(0, t1.DimToFlat(0), "Expected value")
+	assert.Panics(func() { t1.DimToFlat() }, "DimToFlat with no arguments should panic")
+	assert.Panics(func() { t1.DimToFlat(1, 0) }, "DimToFlat with too many arguments should panic")
+	assert.Panics(func() { t1.DimToFlat(-1) }, "DimToFlat with negative arguments should panic")
+	assert.Panics(func() { t1.DimToFlat(10) }, "DimToFlat with out-of-bounds arguments should panic")
 
-	assert.Equal(false, true, "Test not implemented")
+	t2 := NewTensor(3, 3)
+	assert.EqualValues(0, t2.DimToFlat(0, 0), "Expected value")
+	assert.EqualValues(6, t2.DimToFlat(2, 0), "Expected value")
+	assert.EqualValues(4, t2.DimToFlat(1, 1), "Expected value")
+	assert.EqualValues(1, t2.DimToFlat(0, 1), "Expected value")
+	assert.Panics(func() { t2.DimToFlat() }, "DimToFlat with no arguments should panic")
+	assert.Panics(func() { t2.DimToFlat(1, 0, 4) }, "DimToFlat with too many arguments should panic")
+	assert.Panics(func() { t2.DimToFlat(1) }, "DimToFlat with too few arguments should panic")
+	assert.Panics(func() { t2.DimToFlat(0, -1) }, "DimToFlat with negative arguments should panic")
+	assert.Panics(func() { t2.DimToFlat(2, 9) }, "DimToFlat with out-of-bounds arguments should panic")
+
+	t3 := NewTensor(5, 5, 5)
+	assert.EqualValues(0, t3.DimToFlat(0, 0, 0), "Expected value")
+	assert.EqualValues(3, t3.DimToFlat(3, 0, 0), "Expected value")
+	assert.EqualValues(8, t3.DimToFlat(3, 1, 0), "Expected value")
+	assert.EqualValues(58, t3.DimToFlat(3, 1, 2), "Expected value")
+	assert.EqualValues(55, t3.DimToFlat(0, 1, 2), "Expected value")
+	assert.Panics(func() { t3.DimToFlat() }, "DimToFlat with no arguments should panic")
+	assert.Panics(func() { t3.DimToFlat(1, 0, 4, 5) }, "DimToFlat with too many arguments should panic")
+	assert.Panics(func() { t3.DimToFlat(1, 0) }, "DimToFlat with too few arguments should panic")
+	assert.Panics(func() { t3.DimToFlat(0, 0, -1) }, "DimToFlat with negative arguments should panic")
+	assert.Panics(func() { t3.DimToFlat(2, 3, 9) }, "DimToFlat with out-of-bounds arguments should panic")
 }
 
 func TestFlatToDim(t *testing.T) {
