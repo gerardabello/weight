@@ -12,7 +12,10 @@ type Tensor struct {
 
 func NewTensor(size ...int) *Tensor {
 	t := &Tensor{}
-	t.Allocate(size...)
+	err := t.Allocate(size...)
+	if err != nil {
+		panic(err)
+	}
 	return t
 }
 
@@ -145,20 +148,22 @@ func (t *Tensor) Copy() *Tensor {
 }
 
 //SetSize sets the size of Tensor and allocates the necessary memory
-func (t *Tensor) Allocate(size ...int) {
+func (t *Tensor) Allocate(size ...int) error {
 	if len(size) == 0 {
-		panic("Allocate expects at least one dimension")
+		return errors.New("Allocate expects at least one dimension")
 	}
 
 	for i := 0; i < len(size); i++ {
 		if size[i] <= 0 {
-			panic("Allocating a slice with a dimension of size zero or negative is not allowed")
+			return errors.New("Allocating a slice with a dimension of size zero or negative is not allowed")
 		}
 	}
 
 	t.Size = size
 	t.Values = make([]float64, SizeLength(size))
 	t.calcTmpStrides()
+
+	return nil
 }
 
 func (t *Tensor) calcTmpStrides() {
