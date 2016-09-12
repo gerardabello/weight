@@ -138,9 +138,19 @@ func TestCopy(t *testing.T) {
 }
 
 func TestNewTensor(t *testing.T) {
+	//As this just calls Allocate, we just test that this returns tensors equal to Allocate
 	assert := assert.New(t)
 
-	assert.Equal(false, true, "Test not implemented")
+	for i := 0; i < 20; i++ {
+		for j := 0; j < 20; j++ {
+			size := generateRandomSize(i)
+			t1 := NewTensor(size...)
+			t2 := Tensor{}
+			t2.Allocate(size...)
+			assert.EqualValues(len(t2.Values), len(t1.Values), "Lenght of underlying array should be the same as with Allocate()")
+			assert.EqualValues(len(t2.Size), len(t1.Size), "Lenght of underlying size array should be the same as with Allocate()")
+		}
+	}
 }
 
 func TestHasSize(t *testing.T) {
