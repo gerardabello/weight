@@ -25,30 +25,20 @@ func TestAllocate(t *testing.T) {
 	assert.EqualValues(72, len(t5.Values), "Lenght of underlying array should be the same as allocated size")
 	assert.EqualValues(5, len(t5.Size), "Lenght of underlying size array should be the same as allocated dimensions")
 
-	assert.Panics(func() {
-		tp1 := Tensor{}
-		tp1.Allocate(0)
-	}, "Allocate with zero size should panic")
+	tp1 := Tensor{}
+	assert.Error(tp1.Allocate(0), "Allocate with zero size should panic")
 
-	assert.Panics(func() {
-		tp2 := Tensor{}
-		tp2.Allocate(1, 3, 6, 0, 2)
-	}, "Allocate with a zero size dimension should panic")
+	tp2 := Tensor{}
+	assert.Error(tp2.Allocate(1, 3, 6, 0, 2), "Allocate with a zero size dimension should panic")
 
-	assert.Panics(func() {
-		tp3 := Tensor{}
-		tp3.Allocate()
-	}, "Allocate with no dimensions should panic")
+	tp3 := Tensor{}
+	assert.Error(tp3.Allocate(), "Allocate with no dimensions should panic")
 
-	assert.Panics(func() {
-		tp4 := Tensor{}
-		tp4.Allocate(-1)
-	}, "Allocate with negative size should panic")
+	tp4 := Tensor{}
+	assert.Error(tp4.Allocate(-1), "Allocate with negative size should panic")
 
-	assert.Panics(func() {
-		tp5 := Tensor{}
-		tp5.Allocate(1, 3, -2, -1, 2)
-	}, "Allocate with a negative size dimension should panic")
+	tp5 := Tensor{}
+	assert.Error(tp5.Allocate(1, 3, -2, -1, 2), "Allocate with a negative size dimension should panic")
 
 }
 
