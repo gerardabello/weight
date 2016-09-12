@@ -64,9 +64,9 @@ func TestDimToFlat(t *testing.T) {
 
 	t2 := NewTensor(3, 3)
 	assert.EqualValues(0, t2.DimToFlat(0, 0), "Expected value")
-	assert.EqualValues(6, t2.DimToFlat(2, 0), "Expected value")
+	assert.EqualValues(6, t2.DimToFlat(0, 2), "Expected value")
 	assert.EqualValues(4, t2.DimToFlat(1, 1), "Expected value")
-	assert.EqualValues(1, t2.DimToFlat(0, 1), "Expected value")
+	assert.EqualValues(3, t2.DimToFlat(0, 1), "Expected value")
 	assert.Panics(func() { t2.DimToFlat() }, "DimToFlat with no arguments should panic")
 	assert.Panics(func() { t2.DimToFlat(1, 0, 4) }, "DimToFlat with too many arguments should panic")
 	assert.Panics(func() { t2.DimToFlat(1) }, "DimToFlat with too few arguments should panic")
@@ -99,7 +99,118 @@ func TestFlatToDim(t *testing.T) {
 func TestSubstract(t *testing.T) {
 	assert := assert.New(t)
 
-	assert.Equal(false, true, "Test not implemented")
+	for i := 1; i < 4; i++ {
+		for j := 0; j < 10; j++ {
+			size := generateRandomSize(i)
+			t1 := generateRandomTensorSize(size...)
+			t2 := generateRandomTensorSize(size...)
+
+			subvals := make([]float64, SizeLength(size))
+			for k := 0; k < len(subvals); k++ {
+				subvals[k] = t1.Values[k] - t2.Values[k]
+			}
+
+			err := t1.Substract(t2)
+
+			assert.NoError(err, "Substracting should return no error")
+			assert.EqualValues(subvals, t1.Values, "Using Substract() should return the difference of all values")
+		}
+	}
+
+	{
+		t1 := generateRandomTensorSize(3, 4)
+		t2 := generateRandomTensorSize(3, 3)
+
+		err := t1.Substract(t2)
+		assert.Error(err, "Substracting tensors of different sizes should return an error")
+	}
+
+	{
+		t1 := generateRandomTensorSize(3)
+		t2 := generateRandomTensorSize(3, 3)
+
+		err := t1.Substract(t2)
+		assert.Error(err, "Substracting tensors of different dimensions should return an error")
+	}
+
+}
+
+func TestAdd(t *testing.T) {
+	assert := assert.New(t)
+
+	//Test adding one tensor to another
+	for i := 1; i < 4; i++ {
+		for j := 0; j < 10; j++ {
+			size := generateRandomSize(i)
+			t1 := generateRandomTensorSize(size...)
+			t2 := generateRandomTensorSize(size...)
+
+			addvals := make([]float64, SizeLength(size))
+			for k := 0; k < len(addvals); k++ {
+				addvals[k] = t1.Values[k] + t2.Values[k]
+			}
+
+			err := t1.Add(t2)
+
+			assert.NoError(err, "Adding should return no error")
+			assert.EqualValues(addvals, t1.Values, "Using Add() should return the sum of all values")
+		}
+	}
+
+	//Test adding multiple tensors to another
+	for i := 1; i < 4; i++ {
+		for j := 0; j < 20; j++ {
+			size := generateRandomSize(i)
+			t1 := generateRandomTensorSize(size...)
+			t2 := generateRandomTensorSize(size...)
+			t3 := generateRandomTensorSize(size...)
+			t4 := generateRandomTensorSize(size...)
+
+			addvals := make([]float64, SizeLength(size))
+			for k := 0; k < len(addvals); k++ {
+				addvals[k] = t1.Values[k] + t2.Values[k] + t3.Values[k] + t4.Values[k]
+			}
+
+			err := t1.Add(t2, t3, t4)
+
+			assert.NoError(err, "Adding should return no error")
+			assert.EqualValues(addvals, t1.Values, "Using Add() should return the sum of all values")
+		}
+	}
+
+	{
+		t1 := generateRandomTensorSize(3, 4)
+		t2 := generateRandomTensorSize(3, 3)
+
+		err := t1.Add(t2)
+		assert.Error(err, "Adding tensors of different sizes should return an error")
+	}
+
+	{
+		t1 := generateRandomTensorSize(3)
+		t2 := generateRandomTensorSize(3, 3)
+
+		err := t1.Add(t2)
+		assert.Error(err, "Adding tensors of different dimensions should return an error")
+	}
+
+	{
+		t1 := generateRandomTensorSize(5, 5)
+		t2 := generateRandomTensorSize(5, 5)
+		t3 := generateRandomTensorSize(5, 4)
+
+		err := t1.Add(t2, t3)
+		assert.Error(err, "Adding tensors of different sizes should return an error")
+	}
+
+	{
+		t1 := generateRandomTensorSize(2, 2)
+		t2 := generateRandomTensorSize(2, 2)
+		t3 := generateRandomTensorSize(2, 2, 1)
+
+		err := t1.Add(t2, t3)
+		assert.Error(err, "Adding tensors of different dimensions should return an error")
+	}
 }
 
 func TestZero(t *testing.T) {
@@ -141,8 +252,8 @@ func TestNewTensor(t *testing.T) {
 	//As this just calls Allocate, we just test that this returns tensors equal to Allocate
 	assert := assert.New(t)
 
-	for i := 0; i < 20; i++ {
-		for j := 0; j < 20; j++ {
+	for i := 1; i < 4; i++ {
+		for j := 0; j < 10; j++ {
 			size := generateRandomSize(i)
 			t1 := NewTensor(size...)
 			t2 := Tensor{}

@@ -1,5 +1,7 @@
 package tensor
 
+import "errors"
+
 //Tensor is a structure to represent a multiple dimension matrix
 type Tensor struct {
 	Values []float64
@@ -169,8 +171,10 @@ func (t *Tensor) calcTmpStrides() {
 }
 
 func (t *Tensor) Substract(s *Tensor) error {
+	if !s.HasSize(t.Size) {
+		return errors.New("Cannot substract tensors of different shape/size")
+	}
 
-	//TODO check shape?
 	for i := range t.Values {
 		t.Values[i] -= s.Values[i]
 	}
@@ -179,6 +183,11 @@ func (t *Tensor) Substract(s *Tensor) error {
 }
 
 func (t *Tensor) Add(a ...*Tensor) error {
+	for i := 0; i < len(a); i++ {
+		if !a[i].HasSize(t.Size) {
+			return errors.New("Cannot add tensors of different shape/size")
+		}
+	}
 
 	for i := range t.Values {
 		for n := range a {
@@ -190,11 +199,9 @@ func (t *Tensor) Add(a ...*Tensor) error {
 }
 
 func (t *Tensor) Mul(s float64) {
-
 	for i := range t.Values {
 		t.Values[i] *= s
 	}
-
 }
 
 func (t *Tensor) GetNumberOfValues() int {
