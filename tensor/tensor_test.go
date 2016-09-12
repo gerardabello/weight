@@ -278,7 +278,95 @@ func TestHasSize(t *testing.T) {
 func TestMax(t *testing.T) {
 	assert := assert.New(t)
 
-	assert.Equal(false, true, "Test not implemented")
+	{
+		t1 := Tensor{
+			Values: []float64{
+				0, 0, 0,
+				1, 0.5, 1,
+				0, 1.1, 0},
+			Size: []int{3, 3},
+		}
+		i, v := t1.Max()
+		assert.EqualValues(7, i, "Max index incorrect")
+		assert.EqualValues(1.1, v, "Max value incorrect")
+	}
+
+	{
+		t1 := Tensor{
+			Values: []float64{
+				0, 0, 0,
+				1, 0.5, -1,
+				0, -1.1, 0},
+			Size: []int{3, 3},
+		}
+		i, v := t1.Max()
+		assert.EqualValues(3, i, "Max index incorrect")
+		assert.EqualValues(1, v, "Max value incorrect")
+	}
+	{
+		t1 := Tensor{
+			Values: []float64{
+				0, 0, 0,
+				1, 0.5, -1,
+				0, -1.1, 0,
+				0, 0, -6,
+				4, 0.5, -1,
+				0, -1.1, 0,
+			},
+			Size: []int{3, 3, 2},
+		}
+		i, v := t1.Max()
+		assert.EqualValues(12, i, "Max index incorrect")
+		assert.EqualValues(4, v, "Max value incorrect")
+	}
+
+}
+
+func TestMaxAbs(t *testing.T) {
+	assert := assert.New(t)
+
+	{
+		t1 := Tensor{
+			Values: []float64{
+				0, 0, 0,
+				1, 0.5, 1,
+				0, 1.1, 0},
+			Size: []int{3, 3},
+		}
+		i, v := t1.MaxAbs()
+		assert.EqualValues(7, i, "Max index incorrect")
+		assert.EqualValues(1.1, v, "Max value incorrect")
+	}
+
+	{
+		t1 := Tensor{
+			Values: []float64{
+				0, 0, 0,
+				1, 0.5, -1,
+				0, -1.1, 0},
+			Size: []int{3, 3},
+		}
+		i, v := t1.MaxAbs()
+		assert.EqualValues(7, i, "Max index incorrect")
+		assert.EqualValues(-1.1, v, "Max value incorrect")
+	}
+	{
+		t1 := Tensor{
+			Values: []float64{
+				0, 0, 0,
+				1, 0.5, -1,
+				0, -1.1, 0,
+				0, 0, -6,
+				4, 0.5, -1,
+				0, -1.1, 0,
+			},
+			Size: []int{3, 3, 2},
+		}
+		i, v := t1.MaxAbs()
+		assert.EqualValues(11, i, "Max index incorrect")
+		assert.EqualValues(-6, v, "Max value incorrect")
+	}
+
 }
 
 type SizeSlice struct {
