@@ -213,7 +213,7 @@ func TestMNISTDense(t *testing.T) {
 	//rand.Seed(time.Now().UnixNano())
 	rand.Seed(4)
 
-	hln1 := 300
+	hln1 := 50
 
 	net, err := layers.NewSequentialNet(
 		layers.NewDenseLayer([]int{28, 28}, []int{hln1}),
@@ -226,8 +226,15 @@ func TestMNISTDense(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
-	config := training.LearningConfig{BatchSize: 12, Epochs: 2, LearningRateStart: 0.001, LearningRateEnd: 0.001, Method: training.Adam}
-	testLearnMNIST(t, net, config, 0.94)
+	config := training.LearningConfig{
+		BatchSize:         12,
+		Epochs:            5,
+		LearningRateStart: 0.5,
+		LearningRateEnd:   0.1,
+		Momentum:          0.9,
+		Method:            training.Momentum,
+	}
+	testLearnMNIST(t, net, config, 0.93)
 }
 
 func TestMNISTLinear(t *testing.T) {
