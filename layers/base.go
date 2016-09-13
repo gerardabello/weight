@@ -35,8 +35,15 @@ func (l *BaseLayer) Init(inputSize, outputSize []int) error {
 		return errors.New("Cannot create dimensionless layer")
 	}
 
-	l.output.Allocate(outputSize...)
-	l.propagation.Allocate(inputSize...)
+	var err error
+	err = l.output.Allocate(outputSize...)
+	if err != nil {
+		return err
+	}
+	err = l.propagation.Allocate(inputSize...)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
