@@ -5,14 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"math"
-	"math/rand"
 
 	"gitlab.com/gerardabello/weight"
 	"gitlab.com/gerardabello/weight/marshaling"
 	"gitlab.com/gerardabello/weight/tensor"
 )
-
 
 func (l *DenseLayer) Marshal(writer io.Writer) error {
 	tarfile := tar.NewWriter(writer)

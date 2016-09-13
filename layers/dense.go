@@ -1,15 +1,10 @@
 package layers
 
 import (
-	"archive/tar"
-	"encoding/json"
-	"errors"
-	"io"
 	"math"
 	"math/rand"
 
 	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/marshaling"
 	"gitlab.com/gerardabello/weight/tensor"
 )
 

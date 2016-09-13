@@ -1,10 +1,6 @@
 package layers
 
 import (
-	"archive/tar"
-	"encoding/json"
-	"errors"
-	"io"
 	"math"
 
 	"gitlab.com/gerardabello/weight"
@@ -61,63 +57,4 @@ func (l *SigmoidLayer) BackPropagate(err *tensor.Tensor) (*tensor.Tensor, error)
 
 	l.mutex.Unlock()
 	return &l.propagation, nil
-}
-
-func (l *SigmoidLayer) Marshal(writer io.Writer) error {
-	tarfile := tar.NewWriter(writer)
-	defer tarfile.Close()
-
-	//save info
-	err := writeInfoTar(
-		tarfile,
-		&map[string]interface{}{
-			"input": l.GetInputSize(),
-		},
-	)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func UnmarshalSigmoidLayer(reader io.Reader) (*SigmoidLayer, error) {
-	tr := tar.NewReader(reader)
-	// Iterate through the files in the archive.
-
-	var inputSize []int
-
-	for {
-		hdr, err := tr.Next()
-		if err == io.EOF {
-			// end of tar archive
-			break
-		}
-		if err != nil {
-			return nil, err
-		}
-
-		switch hdr.Name {
-		case "info":
-			info := map[string][]int{}
-			dec := json.NewDecoder(tr)
-			err := dec.Decode(&info)
-			if err == io.EOF {
-				continue
-			}
-			if err != nil {
-				return nil, err
-			}
-
-			inputSize = info["input"]
-
-		default:
-			return nil, errors.New("Unrecognized file " + hdr.Name)
-		}
-
-	}
-
-	l := NewSigmoidLayer(inputSize...)
-
-	return l, nil
 }

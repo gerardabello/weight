@@ -150,7 +150,9 @@ func TestMarshalDense(t *testing.T) {
 
 	fcl.Marshal(&b)
 
-	nfcl, err := UnmarshalDenseLayer(&b)
+	unmarshaled, err := UnmarshalDenseLayer(&b)
+
+	nfcl := unmarshaled.(*DenseLayer)
 
 	assert.NoError(err, "Error while unmarshaling")
 
