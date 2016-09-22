@@ -1,5 +1,7 @@
 package tensor
 
+import "errors"
+
 //Tensor is a structure to represent a multiple dimension matrix
 type Tensor struct {
 	Values []float64
@@ -10,7 +12,10 @@ type Tensor struct {
 
 func NewTensor(size ...int) *Tensor {
 	t := &Tensor{}
-	t.Allocate(size...)
+	err := t.Allocate(size...)
+	if err != nil {
+		panic(err)
+	}
 	return t
 }
 
@@ -66,6 +71,11 @@ func (t *Tensor) DimToFlat(index ...int) int {
 	if len(index) != len(t.Size) {
 		panic("Index dimensions do not match Tensor dimensions")
 	}
+	for i := 0; i < len(index); i++ {
+		if index[i] < 0 || index[i] >= t.Size[i] {
+			panic("Index out of bounds")
+		}
+	}
 
 	/*The idea behind this algorithm:
 	  pos is the position we want to calculate
@@ -95,9 +105,6 @@ func (t *Tensor) DimToFlat(index ...int) int {
 
 	pos := 0
 	for i := 0; i < len(index); i++ {
-		if index[i] < 0 || index[i] >= t.Size[i] {
-			panic("Index out of bounds")
-		}
 		pos += t.tmpStrides[i] * index[i]
 	}
 
@@ -141,10 +148,22 @@ func (t *Tensor) Copy() *Tensor {
 }
 
 //SetSize sets the size of Tensor and allocates the necessary memory
-func (t *Tensor) Allocate(size ...int) {
+func (t *Tensor) Allocate(size ...int) error {
+	if len(size) == 0 {
+		return errors.New("Allocate expects at least one dimension")
+	}
+
+	for i := 0; i < len(size); i++ {
+		if size[i] <= 0 {
+			return errors.New("Allocating a slice with a dimension of size zero or negative is not allowed")
+		}
+	}
+
 	t.Size = size
 	t.Values = make([]float64, SizeLength(size))
 	t.calcTmpStrides()
+
+	return nil
 }
 
 func (t *Tensor) calcTmpStrides() {
@@ -157,8 +176,10 @@ func (t *Tensor) calcTmpStrides() {
 }
 
 func (t *Tensor) Substract(s *Tensor) error {
+	if !s.HasSize(t.Size) {
+		return errors.New("Cannot substract tensors of different shape/size")
+	}
 
-	//TODO check shape?
 	for i := range t.Values {
 		t.Values[i] -= s.Values[i]
 	}
@@ -167,6 +188,11 @@ func (t *Tensor) Substract(s *Tensor) error {
 }
 
 func (t *Tensor) Add(a ...*Tensor) error {
+	for i := 0; i < len(a); i++ {
+		if !a[i].HasSize(t.Size) {
+			return errors.New("Cannot add tensors of different shape/size")
+		}
+	}
 
 	for i := range t.Values {
 		for n := range a {
@@ -178,11 +204,9 @@ func (t *Tensor) Add(a ...*Tensor) error {
 }
 
 func (t *Tensor) Mul(s float64) {
-
 	for i := range t.Values {
 		t.Values[i] *= s
 	}
-
 }
 
 func (t *Tensor) GetNumberOfValues() int {

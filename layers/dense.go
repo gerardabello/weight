@@ -23,10 +23,8 @@ func NewDenseLayer(inputSize, outputSize []int) *DenseLayer {
 	layer.id = "Dense-" + layer.id
 
 	//allocate weights
-	layer.weights = &tensor.Tensor{}
-	layer.weightsGrad = &tensor.Tensor{}
-	layer.weights.Allocate(layer.GetNumberOfInputs(), layer.GetNumberOfNeurons())
-	layer.weightsGrad.Allocate(layer.GetNumberOfInputs(), layer.GetNumberOfNeurons())
+	layer.weights = tensor.NewTensor(layer.GetNumberOfInputs(), layer.GetNumberOfNeurons())
+	layer.weightsGrad = tensor.NewTensor(layer.GetNumberOfInputs(), layer.GetNumberOfNeurons())
 
 	//initialize for relus
 	stdev := math.Sqrt(2.0 / float64(tensor.SizeLength(layer.GetInputSize())))
@@ -36,10 +34,8 @@ func NewDenseLayer(inputSize, outputSize []int) *DenseLayer {
 	}
 
 	//Initialize slice of biases, one for each neuron
-	layer.bias = &tensor.Tensor{}
-	layer.biasGrad = &tensor.Tensor{}
-	layer.bias.Allocate(layer.GetNumberOfNeurons())
-	layer.biasGrad.Allocate(layer.GetNumberOfNeurons())
+	layer.bias = tensor.NewTensor(layer.GetNumberOfNeurons())
+	layer.biasGrad = tensor.NewTensor(layer.GetNumberOfNeurons())
 
 	for i := range layer.bias.Values {
 		//Leave bias to 0
