@@ -16,20 +16,11 @@ import (
 
 //https://cs.stanford.edu/people/karpathy/convnetjs/demo/cifar10.html
 func TestCIFAR100ConvNetDemo(t *testing.T) {
-	cl0, err := layers.NewSquareConvolutionalLayer(32, 3, 16, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl0 := layers.NewSquareConvolutionalLayer(32, 3, 16, 2, 1, 2)
 
-	cl1, err := layers.NewSquareConvolutionalLayer(16, 16, 20, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl1 := layers.NewSquareConvolutionalLayer(16, 16, 20, 2, 1, 2)
 
-	cl2, err := layers.NewSquareConvolutionalLayer(8, 20, 20, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl2 := layers.NewSquareConvolutionalLayer(8, 20, 20, 2, 1, 2)
 
 	net, err := layers.NewSequentialNet(
 		cl0,
@@ -56,15 +47,9 @@ func TestCIFAR100ConvNetDemo(t *testing.T) {
 }
 
 func TestCIFAR100LeNet(t *testing.T) {
-	cl0, err := layers.NewSquareConvolutionalLayer(32, 3, 20, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl0 := layers.NewSquareConvolutionalLayer(32, 3, 20, 2, 1, 2)
 
-	cl1, err := layers.NewSquareConvolutionalLayer(16, 20, 20, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl1 := layers.NewSquareConvolutionalLayer(16, 20, 20, 2, 1, 2)
 
 	net, err := layers.NewSequentialNet(
 		cl0,
@@ -90,15 +75,9 @@ func TestCIFAR100LeNet(t *testing.T) {
 }
 
 func TestCIFAR100Convolutional(t *testing.T) {
-	cl0, err := layers.NewSquareConvolutionalLayer(32, 3, 16, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl0 := layers.NewSquareConvolutionalLayer(32, 3, 16, 2, 1, 2)
 
-	cl1, err := layers.NewSquareConvolutionalLayer(16, 16, 16, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl1 := layers.NewSquareConvolutionalLayer(16, 16, 16, 2, 1, 2)
 
 	net, err := layers.NewSequentialNet(
 		cl0,

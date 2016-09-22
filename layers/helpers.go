@@ -15,16 +15,12 @@ func NewCRPBlock(inputSize []int, nConv, nKernels int) *FFNet {
 
 	size := inputSize
 	for i := 0; i < nConv; i++ {
-		//cl0, err := NewSquareConvolutionalLayer(28, 1, 16, 2, 1, 2)
-		cl, err := NewConvolutionalLayer(size[0], size[1], size[2],
+		//cl0 := NewSquareConvolutionalLayer(28, 1, 16, 2, 1, 2)
+		cl := NewConvolutionalLayer(size[0], size[1], size[2],
 			nKernels,
 			1, 1,
 			1, 1,
 			1, 1)
-
-		if err != nil {
-			panic(err)
-		}
 
 		lyrs = append(lyrs,
 			cl,

@@ -15,16 +15,9 @@ func benchmarkConvLayerActivation(b *testing.B, size int, depth int) {
 
 	input := &tensor.Tensor{Size: []int{size, size, 1}, Values: arr}
 
-	cl0, err := NewSquareConvolutionalLayer(size, 1, depth, 2, 1, 2)
-	if err != nil {
-		b.Fatalf(err.Error())
-	}
+	cl0 := NewSquareConvolutionalLayer(size, 1, depth, 2, 1, 2)
 
 	net := cl0
-
-	if err != nil {
-		b.Fatalf(err.Error())
-	}
 
 	for i := 0; i < b.N; i++ {
 		_, err := net.Activate(input)
@@ -49,10 +42,7 @@ func benchmarkConvLayerBP(b *testing.B, size int, depth int) {
 	grad := &tensor.Tensor{Size: []int{size, size, depth}, Values: arr}
 	input := &tensor.Tensor{Size: []int{size, size, 1}, Values: arr}
 
-	cl0, err := NewSquareConvolutionalLayer(size, 1, depth, 2, 1, 2)
-	if err != nil {
-		b.Fatalf(err.Error())
-	}
+	cl0 := NewSquareConvolutionalLayer(size, 1, depth, 2, 1, 2)
 
 	net, err := NewSequentialNet(
 		cl0,

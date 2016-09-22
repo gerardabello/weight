@@ -36,20 +36,11 @@ func TestCIFAR10Open(t *testing.T) {
 //Forward time per example: ~8ms
 //Backprop time per example: ~11ms
 func TestCIFAR10ConvNetDemo(t *testing.T) {
-	cl0, err := layers.NewSquareConvolutionalLayer(32, 3, 16, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl0 := layers.NewSquareConvolutionalLayer(32, 3, 16, 2, 1, 2)
 
-	cl1, err := layers.NewSquareConvolutionalLayer(16, 16, 20, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl1 := layers.NewSquareConvolutionalLayer(16, 16, 20, 2, 1, 2)
 
-	cl2, err := layers.NewSquareConvolutionalLayer(8, 20, 20, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl2 := layers.NewSquareConvolutionalLayer(8, 20, 20, 2, 1, 2)
 
 	net, err := layers.NewSequentialNet(
 		layers.NewReshaperLayer([]int{32, 32, 3}, []int{32, 32, 3}),
@@ -79,15 +70,9 @@ func TestCIFAR10ConvNetDemo(t *testing.T) {
 
 //They say they get arround 86% with local response normalization
 func TestCIFAR10TFTutorial(t *testing.T) {
-	cl0, err := layers.NewSquareConvolutionalLayer(24, 3, 64, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl0 := layers.NewSquareConvolutionalLayer(24, 3, 64, 2, 1, 2)
 
-	cl1, err := layers.NewSquareConvolutionalLayer(12, 64, 64, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl1 := layers.NewSquareConvolutionalLayer(12, 64, 64, 2, 1, 2)
 
 	net, err := layers.NewSequentialNet(
 		layers.NewReshaperLayer([]int{24, 24, 3}, []int{24, 24, 3}),
@@ -116,15 +101,9 @@ func TestCIFAR10TFTutorial(t *testing.T) {
 }
 
 func TestCIFAR10LeNet(t *testing.T) {
-	cl0, err := layers.NewSquareConvolutionalLayer(32, 3, 20, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl0 := layers.NewSquareConvolutionalLayer(32, 3, 20, 2, 1, 2)
 
-	cl1, err := layers.NewSquareConvolutionalLayer(16, 20, 20, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl1 := layers.NewSquareConvolutionalLayer(16, 20, 20, 2, 1, 2)
 
 	net, err := layers.NewSequentialNet(
 		cl0,
@@ -150,20 +129,11 @@ func TestCIFAR10LeNet(t *testing.T) {
 }
 
 func TestCIFAR10CaffeQuick(t *testing.T) {
-	cl1, err := layers.NewSquareConvolutionalLayer(32, 3, 32, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl1 := layers.NewSquareConvolutionalLayer(32, 3, 32, 2, 1, 2)
 
-	cl2, err := layers.NewSquareConvolutionalLayer(16, 32, 32, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl2 := layers.NewSquareConvolutionalLayer(16, 32, 32, 2, 1, 2)
 
-	cl3, err := layers.NewSquareConvolutionalLayer(8, 32, 64, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl3 := layers.NewSquareConvolutionalLayer(8, 32, 64, 2, 1, 2)
 
 	net, err := layers.NewSequentialNet(
 		cl1,
