@@ -40,11 +40,12 @@ func (c *SquareMeanCost) Cost(input *tensor.Tensor, target *tensor.Tensor) float
 	cost := 0.0
 	for i := 0; i < n; i++ {
 		d := target.Values[i] - input.Values[i]
-		c.lastGrad[i] = d
-		cost -= math.Pow(d, 2)
+		c.lastGrad[i] = -d
+		cost += 0.5*math.Pow(d, 2)
 	}
 	cost /= 2          //to make the derivative simpler
 	cost /= float64(n) //to make mean
+
 
 	return cost
 }

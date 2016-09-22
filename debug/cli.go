@@ -19,10 +19,10 @@ func (d *CLIDebugger) Debug(status <-chan string, layerInfo <-chan []*LayerInfo,
 				}
 			}
 		case trainerStats := <-trainInfo:
-			fmt.Printf("epoch %5.2f - loss:%-8.4f accuracy:%-8.4f EPS:%-8.1f\n", float64(trainerStats.Epoch)+(float64(trainerStats.Batch)/float64(trainerStats.Batches)), trainerStats.Loss, trainerStats.Accuracy, trainerStats.ExamplesPerSecond)
+			fmt.Printf("epoch %5.2f - loss:%-8.4e accuracy:%-8.4f EPS:%-8.1f\n", float64(trainerStats.Epoch)+(float64(trainerStats.Batch)/float64(trainerStats.Batches)), trainerStats.Loss, trainerStats.Accuracy, trainerStats.ExamplesPerSecond)
 
 		case testStats := <-testInfo:
-			fmt.Printf("Test Results: \n\t accuracy:%.4f \n\t loss:%.4f \n", testStats.Accuracy, testStats.Loss)
+			fmt.Printf("Test Results: \n\t accuracy:%.4f \n\t loss:%.4e \n", testStats.Accuracy, testStats.Loss)
 		}
 	}
 }
