@@ -43,39 +43,39 @@ type ConvolutionalLayer struct {
 // The stride must divide the image in equal integer parts:  ((inputWidth + padX*2) - (1+kernelPadX*2)) % (strideX+1) == 0 && ((inputHeight + padY*2) - (1+kernelPadY*2)) % (strideY+1) == 0
 // If you want the output area to be the same as the input: kernelPadX == padX && kernelPadY == padY
 // More padding than spatial extend makes no sense so: padX <= kernelPadX && padY < kernelPadY
-func NewConvolutionalLayer(inputWidth, inputHeight, inputDepth, nKernels, kernelPadX, kernelPadY, strideX, strideY, padX, padY int) (*ConvolutionalLayer, error) {
+func NewConvolutionalLayer(inputWidth, inputHeight, inputDepth, nKernels, kernelPadX, kernelPadY, strideX, strideY, padX, padY int) *ConvolutionalLayer {
 	if inputHeight <= 0 || inputWidth <= 0 || inputDepth <= 0 {
-		return nil, fmt.Errorf("Input sizes must be bigger than 0")
+		panic("Input sizes must be bigger than 0")
 	}
 
 	if nKernels <= 0 {
-		return nil, fmt.Errorf("Number of kernels must be bigger than 0")
+		panic("Number of kernels must be bigger than 0")
 	}
 
 	if kernelPadX < 0 || kernelPadY < 0 {
-		return nil, fmt.Errorf("Kernel pads must be positive")
+		panic("Kernel pads must be positive")
 	}
 
 	if strideX <= 0 || strideY <= 0 {
-		return nil, fmt.Errorf("Strides must be bigger than 0")
+		panic("Strides must be bigger than 0")
 	}
 
 	kernelWidth := kernelPadX*2 + 1
 	kernelHeight := kernelPadY*2 + 1
 
 	if !(kernelWidth <= inputWidth && kernelHeight <= inputHeight) {
-		return nil, fmt.Errorf("Kernel cannot be bigger than image")
+		panic("Kernel cannot be bigger than image")
 	}
 
 	if padX > kernelPadX || padY > kernelPadY {
-		return nil, fmt.Errorf("A padding bigger than the kernel padding makes no sense")
+		panic("A padding bigger than the kernel padding makes no sense")
 	}
 
 	if ((inputWidth+(padX-kernelPadX)*2)+strideX-1)%strideX != 0 {
-		return nil, fmt.Errorf("StrideX of %d does not fit", strideX)
+		panic(fmt.Sprintf("StrideX of %d does not fit", strideX))
 	}
 	if ((inputHeight+(padY-kernelPadY)*2)+strideY-1)%strideY != 0 {
-		return nil, fmt.Errorf("StrideY of %d does not fit", strideY)
+		panic(fmt.Sprintf("StrideY of %d does not fit", strideY))
 	}
 
 	strideJumpsX := ((inputWidth + (padX-kernelPadX)*2) + strideX - 1) / strideX
@@ -114,10 +114,10 @@ func NewConvolutionalLayer(inputWidth, inputHeight, inputDepth, nKernels, kernel
 	l.BaseLayer.Init(inputSize, outputSize)
 	l.id = "Conv-" + l.id
 
-	return l, nil
+	return l
 }
 
-func NewSquareConvolutionalLayer(inputSize, inputDepth, nKernels, kernelPad, stride, padding int) (*ConvolutionalLayer, error) {
+func NewSquareConvolutionalLayer(inputSize, inputDepth, nKernels, kernelPad, stride, padding int) *ConvolutionalLayer {
 	return NewConvolutionalLayer(inputSize, inputSize, inputDepth, nKernels, kernelPad, kernelPad, stride, stride, padding, padding)
 }
 
@@ -126,10 +126,7 @@ func (l *ConvolutionalLayer) CreateSlave() weight.Layer {
 	kernelPadX := (l.weights.Size[0] - 1) / 2
 	kernelPadY := (l.weights.Size[1] - 1) / 2
 
-	nl, err := NewConvolutionalLayer(l.inputWidth, l.inputHeight, l.inputDepth, l.GetOutputSize()[2], kernelPadX, kernelPadY, l.strideX, l.strideY, l.padX, l.padY)
-	if err != nil {
-		panic(err)
-	}
+	nl := NewConvolutionalLayer(l.inputWidth, l.inputHeight, l.inputDepth, l.GetOutputSize()[2], kernelPadX, kernelPadY, l.strideX, l.strideY, l.padX, l.padY)
 
 	nl.id = l.ID()
 

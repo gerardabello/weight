@@ -18,11 +18,7 @@ func TestConvRandomWeightsMean(t *testing.T) {
 	inputSize := rand.Intn(500) + 50
 	outputSize := rand.Intn(500) + 50
 
-	fcl, err := NewSquareConvolutionalLayer(inputSize, outputSize, outputSize, 1, 1, 0)
-
-	if err != nil {
-		t.Fatal(err)
-	}
+	fcl := NewSquareConvolutionalLayer(inputSize, outputSize, outputSize, 1, 1, 0)
 
 	var acc float64
 	n := 0
@@ -40,10 +36,8 @@ func TestConvRandomWeightsMean(t *testing.T) {
 
 func TestConvolutionalActivation(t *testing.T) {
 	{
-		layer, err := NewSquareConvolutionalLayer(4, 1, 1, 1, 1, 0)
-		if err != nil {
-			t.Errorf("Error while creating layer: %s", err.Error())
-		}
+		layer := NewSquareConvolutionalLayer(4, 1, 1, 1, 1, 0)
+
 		layer.weights = &tensor.Tensor{
 			Size: []int{3, 3, 1, 1},
 			Values: []float64{
@@ -65,10 +59,8 @@ func TestConvolutionalActivation(t *testing.T) {
 	}
 
 	{
-		layer, err := NewSquareConvolutionalLayer(4, 2, 1, 1, 1, 0)
-		if err != nil {
-			t.Errorf("Error while creating layer: %s", err.Error())
-		}
+		layer := NewSquareConvolutionalLayer(4, 2, 1, 1, 1, 0)
+
 		layer.weights = &tensor.Tensor{
 			Size: []int{3, 3, 2, 1},
 			Values: []float64{
@@ -99,10 +91,8 @@ func TestConvolutionalActivation(t *testing.T) {
 	}
 
 	{
-		layer, err := NewSquareConvolutionalLayer(4, 2, 1, 1, 1, 0)
-		if err != nil {
-			t.Errorf("Error while creating layer: %s", err.Error())
-		}
+		layer := NewSquareConvolutionalLayer(4, 2, 1, 1, 1, 0)
+
 		layer.weights = &tensor.Tensor{
 			Size: []int{3, 3, 2, 1},
 			Values: []float64{
@@ -139,10 +129,8 @@ func TestConvolutionalActivation(t *testing.T) {
 	}
 
 	{
-		layer, err := NewSquareConvolutionalLayer(4, 2, 2, 1, 1, 0)
-		if err != nil {
-			t.Errorf("Error while creating layer: %s", err.Error())
-		}
+		layer := NewSquareConvolutionalLayer(4, 2, 2, 1, 1, 0)
+
 		layer.weights = &tensor.Tensor{
 			Size: []int{3, 3, 2, 2},
 			Values: []float64{
@@ -203,10 +191,7 @@ func testConvolutionalActivation(t *testing.T, layer weight.Layer, data *tensor.
 
 func TestConvolutionalBackPropagation(t *testing.T) {
 
-	layer, err := NewSquareConvolutionalLayer(3, 1, 1, 1, 1, 0)
-	if err != nil {
-		t.Errorf("Error while creating layer: %s", err.Error())
-	}
+	layer := NewSquareConvolutionalLayer(3, 1, 1, 1, 1, 0)
 
 	layer.weights = &tensor.Tensor{
 		Size: []int{3, 3, 1, 1},
@@ -229,7 +214,7 @@ func TestConvolutionalBackPropagation(t *testing.T) {
 			0.4,
 		}}
 
-	_, err = layer.Activate(data)
+	_, err := layer.Activate(data)
 
 	if err != nil {
 		t.Fatalf("Error while activating layer: %s", err.Error())

@@ -13,20 +13,11 @@ import (
 //Forward time per example: ~8ms
 //Backprop time per example: ~11ms
 func createCIFAR10ConvNetJSDemoNet() (*FFNet, error) {
-	cl0, err := NewSquareConvolutionalLayer(32, 3, 16, 2, 1, 2)
-	if err != nil {
-		return nil, err
-	}
+	cl0 := NewSquareConvolutionalLayer(32, 3, 16, 2, 1, 2)
 
-	cl1, err := NewSquareConvolutionalLayer(16, 16, 20, 2, 1, 2)
-	if err != nil {
-		return nil, err
-	}
+	cl1 := NewSquareConvolutionalLayer(16, 16, 20, 2, 1, 2)
 
-	cl2, err := NewSquareConvolutionalLayer(8, 20, 20, 2, 1, 2)
-	if err != nil {
-		return nil, err
-	}
+	cl2 := NewSquareConvolutionalLayer(8, 20, 20, 2, 1, 2)
 
 	net, err := NewSequentialNet(
 		cl0,

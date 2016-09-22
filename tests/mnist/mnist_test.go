@@ -61,20 +61,11 @@ func TestMNISTLeNet3(t *testing.T) {
 		t.Skip("skipping test in short mode.")
 	}
 
-	cl0, err := layers.NewSquareConvolutionalLayer(28, 1, 16, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl0 := layers.NewSquareConvolutionalLayer(28, 1, 16, 2, 1, 2)
 
-	cl1, err := layers.NewSquareConvolutionalLayer(14, 16, 32, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl1 := layers.NewSquareConvolutionalLayer(14, 16, 32, 2, 1, 2)
 
-	cl2, err := layers.NewSquareConvolutionalLayer(7, 32, 32, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl2 := layers.NewSquareConvolutionalLayer(7, 32, 32, 2, 1, 2)
 
 	net, err := layers.NewSequentialNet(
 		layers.NewReshaperLayer([]int{28, 28}, []int{28, 28, 1}),
@@ -111,15 +102,9 @@ func TestMNISTConvTF(t *testing.T) {
 		t.Skip("skipping test in short mode.")
 	}
 
-	cl0, err := layers.NewSquareConvolutionalLayer(28, 1, 32, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl0 := layers.NewSquareConvolutionalLayer(28, 1, 32, 2, 1, 2)
 
-	cl1, err := layers.NewSquareConvolutionalLayer(14, 32, 64, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl1 := layers.NewSquareConvolutionalLayer(14, 32, 64, 2, 1, 2)
 
 	net, err := layers.NewSequentialNet(
 		layers.NewReshaperLayer([]int{28, 28}, []int{28, 28, 1}),
@@ -149,10 +134,7 @@ func TestMNISTCaffe(t *testing.T) {
 		t.Skip("skipping test in short mode.")
 	}
 
-	cl0, err := layers.NewSquareConvolutionalLayer(28, 1, 20, 2, 1, 0)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl0 := layers.NewSquareConvolutionalLayer(28, 1, 20, 2, 1, 0)
 
 	net, err := layers.NewSequentialNet(
 		layers.NewReshaperLayer([]int{28, 28}, []int{28, 28, 1}),
@@ -178,15 +160,9 @@ func TestMNISTConvNetDemo(t *testing.T) {
 		t.Skip("skipping test in short mode.")
 	}
 
-	cl0, err := layers.NewSquareConvolutionalLayer(28, 1, 8, 2, 1, 0)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl0 := layers.NewSquareConvolutionalLayer(28, 1, 8, 2, 1, 0)
 
-	cl1, err := layers.NewSquareConvolutionalLayer(12, 8, 16, 2, 1, 2)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
+	cl1 := layers.NewSquareConvolutionalLayer(12, 8, 16, 2, 1, 2)
 
 	net, err := layers.NewSequentialNet(
 		layers.NewReshaperLayer([]int{28, 28}, []int{28, 28, 1}),
