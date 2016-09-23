@@ -266,7 +266,7 @@ func (t *BPTrainer) Train() error {
 				clog += t.config.BatchSize
 
 				//Print debug info every 2 seconds or in the last batch. Running this code at the end is important as it resets the accumulator variables needed to print debug info.
-				if time.Since(tt).Seconds() > 10 || i == nbatch-1 {
+				if time.Since(tt).Seconds() > 2 || i == nbatch-1 {
 
 					//Only try to send if channel is not full. If we drop some messages we dont care
 					if len(layerInfo) < cap(layerInfo) {
