@@ -60,7 +60,7 @@ func (t *Tensor) ImageSlice() ([]image.Image, error) {
 		return []image.Image{im}, err
 	}
 
-	if t.GetDims() != 3 && t.GetDims() != 3 {
+	if t.GetDims() != 3 {
 		return nil, fmt.Errorf("Cannot create an image slice from a tensor with %d dimensions", t.GetDims())
 	}
 

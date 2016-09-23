@@ -58,13 +58,18 @@ func (t *Tensor) Mean() float64 {
 }
 
 func (t *Tensor) StdDev() float64 {
+	if t.GetNumberOfValues() < 2 {
+		return 0
+	}
+
 	total := 0.0
 	mean := t.Mean()
 	for _, number := range t.Values {
 		total += math.Pow(number-mean, 2)
 	}
 	variance := total / float64(t.GetNumberOfValues()-1)
-	return math.Sqrt(variance)
+	stdev := math.Sqrt(variance)
+	return stdev
 }
 
 //Stats returns all the statistics about the values in the tensor. It is just a convinient method if you need them all
