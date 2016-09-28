@@ -2,6 +2,7 @@ package layers
 
 import (
 	"archive/tar"
+	"bytes"
 	"encoding/json"
 	"errors"
 	"io"
@@ -41,6 +42,40 @@ func (net *FFNet) Marshal(writer io.Writer) error {
 		}
 	}
 
+	//Save layers
+	for i := 0; i < len(net.nodes); i++ {
+
+		var buf bytes.Buffer
+
+		ml, ok := net.nodes[i].layer.(weight.MarshalLayer)
+		if !ok {
+			panic("weight.Layer inside FFNet does not implement MarshalLayer interface")
+		}
+
+		err := ml.Marshal(&buf)
+		if err != nil {
+			return err
+		}
+
+		b := buf.Bytes()
+
+		hdr := &tar.Header{
+			Name: ml.ID() + "." + ml.GetName(),
+			Mode: 0644,
+			Size: int64(len(b)),
+		}
+
+		err = tarfile.WriteHeader(hdr)
+		if err != nil {
+			return err
+		}
+
+		_, err = tarfile.Write(b)
+		if err != nil {
+			return err
+		}
+
+	}
 	return nil
 }
 
