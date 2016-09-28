@@ -24,19 +24,21 @@ func (net *FFNet) getParentsMap() map[string][]string {
 	return res
 }
 
-func (l *FFNet) Marshal(writer io.Writer) error {
+func (net *FFNet) Marshal(writer io.Writer) error {
 	tarfile := tar.NewWriter(writer)
 	defer tarfile.Close()
 
-	//save info
-	err := writeInfoTar(
-		tarfile,
-		&map[string]interface{}{
-			"input": l.GetInputSize(),
-		},
-	)
-	if err != nil {
-		return err
+	//Save parents
+	{
+		buf, err := json.Marshal(net.getParentsMap())
+		if err != nil {
+			return err
+		}
+
+		err = writeBytesTar(tarfile, buf, "parents")
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

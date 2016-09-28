@@ -8,19 +8,15 @@ import (
 	"gitlab.com/gerardabello/weight/tensor"
 )
 
-func writeInfoTar(tarfile *tar.Writer, info *map[string]interface{}) error {
-	buf, err := json.Marshal(info)
-	if err != nil {
-		return err
-	}
+func writeBytesTar(tarfile *tar.Writer, buf []byte, name string) error {
 
-	hdrBias := &tar.Header{
-		Name: "info",
-		Mode: 0600,
+	hdr := &tar.Header{
+		Name: name,
+		Mode: 0644,
 		Size: int64(len(buf)),
 	}
 
-	err = tarfile.WriteHeader(hdrBias)
+	err := tarfile.WriteHeader(hdr)
 	if err != nil {
 		return err
 	}
@@ -33,11 +29,18 @@ func writeInfoTar(tarfile *tar.Writer, info *map[string]interface{}) error {
 	return nil
 }
 
+func writeInfoTar(tarfile *tar.Writer, info *map[string]interface{}) error {
+	buf, err := json.Marshal(info)
+	if err != nil {
+		return err
+	}
+
+	return writeBytesTar(tarfile, buf, "info")
+}
+
 func writeTensorTar(tarfile *tar.Writer, t *tensor.Tensor, name string) error {
 	buf := new(bytes.Buffer)
 	t.Marshal(buf)
-
-	buf.Len()
 
 	hdrBias := &tar.Header{
 		Name: name,
