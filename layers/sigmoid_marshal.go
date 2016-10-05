@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"io/ioutil"
 
 	"gitlab.com/gerardabello/weight"
 	"gitlab.com/gerardabello/weight/marshaling"
@@ -21,6 +22,11 @@ func (l *SigmoidLayer) Marshal(writer io.Writer) error {
 			"input": l.GetInputSize(),
 		},
 	)
+	if err != nil {
+		return err
+	}
+
+	err = writeBytesTar(tarfile, []byte(l.id), "id")
 	if err != nil {
 		return err
 	}
@@ -43,6 +49,7 @@ func UnmarshalSigmoidLayer(reader io.Reader) (weight.MarshalLayer, error) {
 	// Iterate through the files in the archive.
 
 	var inputSize []int
+	var id string
 
 	for {
 		hdr, err := tr.Next()
@@ -55,6 +62,14 @@ func UnmarshalSigmoidLayer(reader io.Reader) (weight.MarshalLayer, error) {
 		}
 
 		switch hdr.Name {
+
+		case "id":
+			buf, err := ioutil.ReadAll(tr)
+			if err != nil {
+				return nil, errors.New("id file read: " + err.Error())
+			}
+			id = string(buf)
+
 		case "info":
 			info := map[string][]int{}
 			dec := json.NewDecoder(tr)
@@ -75,6 +90,8 @@ func UnmarshalSigmoidLayer(reader io.Reader) (weight.MarshalLayer, error) {
 	}
 
 	l := NewSigmoidLayer(inputSize...)
+
+	l.id = id
 
 	return l, nil
 }

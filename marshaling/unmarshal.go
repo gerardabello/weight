@@ -33,7 +33,7 @@ func Unmarshal(name string, reader io.Reader) (weight.MarshalLayer, error) {
 		}
 	}
 
-	return nil, errors.New("Unknown layer format")
+	return nil, errors.New("Unknown layer format: " + name)
 }
 
 func UnmarshalFromFile(file string) (weight.MarshalLayer, error) {
@@ -41,7 +41,8 @@ func UnmarshalFromFile(file string) (weight.MarshalLayer, error) {
 	if err != nil {
 		return nil, err
 	}
-	ext := filepath.Ext(file)
+
+	ext := filepath.Ext(file)[1:]
 
 	return Unmarshal(ext, f)
 }

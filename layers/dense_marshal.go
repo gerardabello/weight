@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"io/ioutil"
 
 	"gitlab.com/gerardabello/weight"
 	"gitlab.com/gerardabello/weight/marshaling"
@@ -23,6 +24,11 @@ func (l *DenseLayer) Marshal(writer io.Writer) error {
 			"output": l.GetOutputSize(),
 		},
 	)
+	if err != nil {
+		return err
+	}
+
+	err = writeBytesTar(tarfile, []byte(l.id), "id")
 	if err != nil {
 		return err
 	}
@@ -57,6 +63,7 @@ func UnmarshalDenseLayer(reader io.Reader) (weight.MarshalLayer, error) {
 
 	var inputSize []int
 	var outputSize []int
+	var id string
 
 	var weights *tensor.Tensor
 	var bias *tensor.Tensor
@@ -72,6 +79,13 @@ func UnmarshalDenseLayer(reader io.Reader) (weight.MarshalLayer, error) {
 		}
 
 		switch hdr.Name {
+		case "id":
+			buf, err := ioutil.ReadAll(tr)
+			if err != nil {
+				return nil, errors.New("id file read: " + err.Error())
+			}
+			id = string(buf)
+
 		case "info":
 			info := map[string][]int{}
 			dec := json.NewDecoder(tr)
@@ -107,6 +121,7 @@ func UnmarshalDenseLayer(reader io.Reader) (weight.MarshalLayer, error) {
 
 	l.weights = weights
 	l.bias = bias
+	l.id = id
 
 	return l, nil
 }

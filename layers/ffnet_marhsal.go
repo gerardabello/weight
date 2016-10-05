@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"strings"
 
 	"gitlab.com/gerardabello/weight"
 	"gitlab.com/gerardabello/weight/marshaling"
@@ -93,7 +94,8 @@ func UnmarshalFFNet(reader io.Reader) (weight.MarshalLayer, error) {
 	tr := tar.NewReader(reader)
 	// Iterate through the files in the archive.
 
-	var inputSize []int
+	layers := map[string]weight.MarshalLayer{}
+	parents := map[string][]string{}
 
 	for {
 		hdr, err := tr.Next()
@@ -105,27 +107,50 @@ func UnmarshalFFNet(reader io.Reader) (weight.MarshalLayer, error) {
 			return nil, err
 		}
 
-		switch hdr.Name {
-		case "info":
-			info := map[string][]int{}
+		if hdr.Name == "parents" {
 			dec := json.NewDecoder(tr)
-			err := dec.Decode(&info)
-			if err == io.EOF {
-				continue
-			}
+			err := dec.Decode(&parents)
+
 			if err != nil {
 				return nil, err
 			}
+		} else {
 
-			inputSize = info["input"]
-
-		default:
-			return nil, errors.New("Unrecognized file " + hdr.Name)
+			str := strings.Split(hdr.Name, ".")
+			id := str[0]
+			layerName := str[1]
+			layers[id], err = marshaling.Unmarshal(layerName, tr)
+			if err != nil {
+				return nil, err
+			}
 		}
-
 	}
 
-	l := NewSigmoidLayer(inputSize...)
+	net := NewFFNet()
 
-	return l, nil
+	count := 0
+	for {
+
+		for k, v := range parents {
+			err := net.AddLayer(layers[k], v...)
+			if err == nil {
+				delete(parents, k)
+			}
+
+		}
+
+		if len(parents) == 0 {
+			break
+		}
+
+		if count > 1000 {
+			return nil, errors.New("Could not resolve graph")
+		}
+
+		count++
+	}
+
+	net.End()
+
+	return net, nil
 }

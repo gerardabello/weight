@@ -35,6 +35,12 @@ func TestGraphActivation(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	dl5 := NewSigmoidLayer(1)
+	err = g.AddLayer(dl5, dl4.ID())
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	g.End()
 
 	in := tensor.NewTensor(6)
@@ -99,6 +105,13 @@ func TestMarshalFFNet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	//TODO check that result1 and result2 are equal
+	err = result1.Substract(result2)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if _, v := result1.MaxAbs(); v > 1e-8 {
+		t.Fatal("The results where different after marshaling and unmarshaling")
+	}
 
 }
