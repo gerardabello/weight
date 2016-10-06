@@ -1,22 +1,29 @@
 package layers
 
 import (
-	"archive/tar"
-	"io"
-	"math"
-
 	"gitlab.com/gerardabello/weight"
 	"gitlab.com/gerardabello/weight/tensor"
 )
 
 type ReLULayer struct {
 	BaseLayer
+
+	negativeSlope float64
+}
+
+func NewLeakyReLULayer(size ...int) *ReLULayer {
+	layer := &ReLULayer{}
+	layer.BaseLayer.Init(size, size)
+	layer.id = "LeakyReLU-" + layer.id
+	layer.negativeSlope = 0.01
+	return layer
 }
 
 func NewReLULayer(size ...int) *ReLULayer {
 	layer := &ReLULayer{}
 	layer.BaseLayer.Init(size, size)
 	layer.id = "ReLU-" + layer.id
+	layer.negativeSlope = 0
 	return layer
 }
 
@@ -38,7 +45,11 @@ func (l *ReLULayer) Activate(input *tensor.Tensor) (*tensor.Tensor, error) {
 	inputs := input.Values
 
 	for i := range l.output.Values {
-		l.output.Values[i] = math.Max(0, inputs[i])
+		if inputs[i] > 0 {
+			l.output.Values[i] = inputs[i]
+		} else {
+			l.output.Values[i] = l.negativeSlope * inputs[i]
+		}
 	}
 
 	l.mutex.Unlock()
@@ -59,28 +70,9 @@ func (l *ReLULayer) BackPropagate(err *tensor.Tensor) (*tensor.Tensor, error) {
 		if inputs[i] > 0 {
 			l.propagation.Values[i] = errs[i]
 		} else {
-			l.propagation.Values[i] = 0
+			l.propagation.Values[i] = l.negativeSlope * errs[i]
 		}
-
 	}
 	l.mutex.Unlock()
 	return &l.propagation, nil
-}
-
-func (l *ReLULayer) Marshal(writer io.Writer) error {
-	tarfile := tar.NewWriter(writer)
-	defer tarfile.Close()
-
-	//save info
-	err := writeInfoTar(
-		tarfile,
-		&map[string]interface{}{
-			"input": l.GetInputSize(),
-		},
-	)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

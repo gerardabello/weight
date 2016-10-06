@@ -1,9 +1,9 @@
 package layers
 
 import (
+	"bytes"
 	"testing"
 
-	"gitlab.com/gerardabello/weight/marshaling"
 	"gitlab.com/gerardabello/weight/tensor"
 )
 
@@ -93,8 +93,14 @@ func TestMarshalFFNet(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	marshaling.MarshalToFile(g, "./test.ffnet")
-	g2, err := marshaling.UnmarshalFromFile("./test.ffnet")
+	var b bytes.Buffer
+
+	err = g.Marshal(&b)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	g2, err := UnmarshalFFNet(&b)
 
 	if err != nil {
 		t.Fatal(err)

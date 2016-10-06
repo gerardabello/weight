@@ -151,10 +151,11 @@ func TestMarshalDense(t *testing.T) {
 	fcl.Marshal(&b)
 
 	unmarshaled, err := UnmarshalDenseLayer(&b)
+	if err != nil {
+		assert.FailNow("Error while unmarshaling")
+	}
 
 	nfcl := unmarshaled.(*DenseLayer)
-
-	assert.NoError(err, "Error while unmarshaling")
 
 	assert.InDeltaSlice(nfcl.weights.Values, fcl.weights.Values, 1e-6, "Expected same weights")
 	assert.InDeltaSlice(nfcl.weights.Size, fcl.weights.Size, 1e-6, "Expected same weights size")
@@ -163,5 +164,7 @@ func TestMarshalDense(t *testing.T) {
 
 	assert.InDeltaSlice(nfcl.GetInputSize(), fcl.GetInputSize(), 1e-6, "Expected same input size")
 	assert.InDeltaSlice(nfcl.GetOutputSize(), fcl.GetOutputSize(), 1e-6, "Expected same output size")
+
+	assert.EqualValues(nfcl.id, fcl.id, "Expected same id")
 
 }

@@ -10,7 +10,7 @@ import (
 	"gitlab.com/gerardabello/weight/marshaling"
 )
 
-func (l *SigmoidLayer) Marshal(writer io.Writer) error {
+func (l *ReLULayer) Marshal(writer io.Writer) error {
 	tarfile := tar.NewWriter(writer)
 	defer tarfile.Close()
 
@@ -18,8 +18,9 @@ func (l *SigmoidLayer) Marshal(writer io.Writer) error {
 	err := writeInfoTar(
 		tarfile,
 		&map[string]interface{}{
-			"input": l.GetInputSize(),
-			"id":    l.id,
+			"input":         l.GetInputSize(),
+			"negativeSlope": l.negativeSlope,
+			"id":            l.id,
 		},
 	)
 	if err != nil {
@@ -29,22 +30,23 @@ func (l *SigmoidLayer) Marshal(writer io.Writer) error {
 	return nil
 }
 
-const SigmoidName = "sigmoid"
+const ReLUName = "relu"
 
 func init() {
-	marshaling.RegisterFormat(SigmoidName, UnmarshalSigmoidLayer)
+	marshaling.RegisterFormat(ReLUName, UnmarshalReLULayer)
 }
 
-func (l *SigmoidLayer) GetName() string {
-	return SigmoidName
+func (l *ReLULayer) GetName() string {
+	return ReLUName
 }
 
-func UnmarshalSigmoidLayer(reader io.Reader) (weight.MarshalLayer, error) {
+func UnmarshalReLULayer(reader io.Reader) (weight.MarshalLayer, error) {
 	tr := tar.NewReader(reader)
 	// Iterate through the files in the archive.
 
 	var inputSize []int
 	var id string
+	var negativeSlope float64
 
 	for {
 		hdr, err := tr.Next()
@@ -57,9 +59,7 @@ func UnmarshalSigmoidLayer(reader io.Reader) (weight.MarshalLayer, error) {
 		}
 
 		switch hdr.Name {
-
 		case "info":
-
 			info := map[string]interface{}{}
 			dec := json.NewDecoder(tr)
 			err := dec.Decode(&info)
@@ -73,11 +73,15 @@ func UnmarshalSigmoidLayer(reader io.Reader) (weight.MarshalLayer, error) {
 			var ok bool
 			inputSize, ok = InterfaceArrayToIntArray(info["input"])
 			if !ok {
-				return nil, errors.New("Unmarshal sigmoid: error parsing info file: could not parse input field")
+				return nil, errors.New("Unmarshal relu: error parsing info file: could not parse input field")
 			}
 			id, ok = info["id"].(string)
 			if !ok {
-				return nil, errors.New("Unmarshal sigmoid: error parsing info file: could not parse id field")
+				return nil, errors.New("Unmarshal relu: error parsing info file: could not parse id field")
+			}
+			negativeSlope, ok = info["negativeSlope"].(float64)
+			if !ok {
+				return nil, errors.New("Unmarshal relu: error parsing info file: could not parse negativeSlope field")
 			}
 
 		default:
@@ -86,9 +90,10 @@ func UnmarshalSigmoidLayer(reader io.Reader) (weight.MarshalLayer, error) {
 
 	}
 
-	l := NewSigmoidLayer(inputSize...)
+	l := NewReLULayer(inputSize...)
 
 	l.id = id
+	l.negativeSlope = negativeSlope
 
 	return l, nil
 }

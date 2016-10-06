@@ -1,6 +1,7 @@
 package layers
 
 import (
+	"bytes"
 	"math"
 	"math/rand"
 	"testing"
@@ -257,5 +258,33 @@ func TestIm2Col(t *testing.T) {
 	im2col(data.Values, out, data.Size[0], data.Size[1], data.Size[2], 3, 3, 0, 0, 1, 1)
 
 	assert.InDeltaSlice([]float64{0.1, 0.2, 0.5, 0.6, 0.2, 0.3, 0.6, 0.7, 0.3, 0.4, 0.7, 0.8, 0.5, 0.6, 0.9, 1, 0.6, 0.7, 1, 1.1, 0.7, 0.8, 1.1, 1.2, 0.9, 1, 1.3, 1.4, 1, 1.1, 1.4, 1.5, 1.1, 1.2, 1.5, 1.6}, out, 0.001, "Unexpected value afeter im2col")
+
+}
+
+func TestMarshalConvolutional(t *testing.T) {
+	assert := assert.New(t)
+
+	l := NewSquareConvolutionalLayer(4, 2, 2, 1, 1, 0)
+
+	var b bytes.Buffer
+
+	l.Marshal(&b)
+
+	unmarshaled, err := UnmarshalConvolutionalLayer(&b)
+	if err != nil {
+		assert.FailNow("Error while unmarshaling " + err.Error())
+	}
+
+	nl := unmarshaled.(*ConvolutionalLayer)
+
+	assert.InDeltaSlice(nl.weights.Values, l.weights.Values, 1e-6, "Expected same weights")
+	assert.InDeltaSlice(nl.weights.Size, l.weights.Size, 1e-6, "Expected same weights size")
+	assert.InDeltaSlice(nl.bias.Values, l.bias.Values, 1e-6, "Expected same bias")
+	assert.InDeltaSlice(nl.bias.Size, l.bias.Size, 1e-6, "Expected same bias size")
+
+	assert.InDeltaSlice(nl.GetInputSize(), l.GetInputSize(), 1e-6, "Expected same input size")
+	assert.InDeltaSlice(nl.GetOutputSize(), l.GetOutputSize(), 1e-6, "Expected same output size")
+
+	assert.EqualValues(nl.id, l.id, "Expected same id")
 
 }

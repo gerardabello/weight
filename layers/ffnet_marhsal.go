@@ -86,7 +86,7 @@ func init() {
 	marshaling.RegisterFormat(FFNetName, UnmarshalFFNet)
 }
 
-func (l *FFNet) GetName() string {
+func (*FFNet) GetName() string {
 	return FFNetName
 }
 

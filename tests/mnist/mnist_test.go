@@ -210,7 +210,7 @@ func TestMNISTDense(t *testing.T) {
 		Momentum:          0.9,
 		Method:            training.Momentum,
 	}
-	testLearnMNIST(t, net, config, 0.93)
+	testLearnMNIST(t, net, config, 0.92)
 }
 
 func TestMNISTLinear(t *testing.T) {
