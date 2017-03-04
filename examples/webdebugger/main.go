@@ -47,12 +47,7 @@ func main() {
 
 func createTestNet() weight.BPLearnerLayer {
 	//New a layer with 3 convolutional layers (16 kernels each) and 2 dense layers (300 neurons each). Input size 28x28 and 10 labels, as we are going to use mnist dataset.
-	net, err := layers.NewGraphLeNet(3, []int{32, 64, 128}, 2, 256, []int{32, 32, 3}, 10)
-	//net, err := layers.NewResNet(3, 2, []int{32, 32, 3}, 10)
-
-	if err != nil {
-		panic(err)
-	}
-
+	net := layers.NewCRPBlocks([]int{32,32,2},3,12,3)
+  
 	return net
 }

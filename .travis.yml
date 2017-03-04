@@ -1,0 +1,21 @@
+language: go
+
+go:
+  - tip
+
+before_install:
+  - go get github.com/stretchr/testify/assert
+
+before_script:
+  - wget http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz
+  - wget http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz
+  - wget http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz
+  - wget http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz
+  - wget https://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz
+  - wget https://www.cs.toronto.edu/~kriz/cifar-100-binary.tar.gz
+  - tar -xvzf cifar-10-binary.tar.gz
+  - tar -xvzf cifar-100-binary.tar.gz
+
+script:
+  - go test -v --short ./...
+
