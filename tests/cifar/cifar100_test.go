@@ -7,15 +7,20 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/costs"
-	"gitlab.com/gerardabello/weight/layers"
-	"gitlab.com/gerardabello/weight/loaders/cifar"
-	"gitlab.com/gerardabello/weight/training"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/costs"
+	"github.com/gerardabello/weight/layers"
+	"github.com/gerardabello/weight/loaders/cifar"
+	"github.com/gerardabello/weight/training"
 )
 
 //https://cs.stanford.edu/people/karpathy/convnetjs/demo/cifar10.html
 func TestCIFAR100ConvNetDemo(t *testing.T) {
+
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+
 	cl0 := layers.NewSquareConvolutionalLayer(32, 3, 16, 2, 1, 2)
 
 	cl1 := layers.NewSquareConvolutionalLayer(16, 16, 20, 2, 1, 2)
@@ -47,6 +52,10 @@ func TestCIFAR100ConvNetDemo(t *testing.T) {
 }
 
 func TestCIFAR100LeNet(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+
 	cl0 := layers.NewSquareConvolutionalLayer(32, 3, 20, 2, 1, 2)
 
 	cl1 := layers.NewSquareConvolutionalLayer(16, 20, 20, 2, 1, 2)
@@ -75,6 +84,11 @@ func TestCIFAR100LeNet(t *testing.T) {
 }
 
 func TestCIFAR100Convolutional(t *testing.T) {
+
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+
 	cl0 := layers.NewSquareConvolutionalLayer(32, 3, 16, 2, 1, 2)
 
 	cl1 := layers.NewSquareConvolutionalLayer(16, 16, 16, 2, 1, 2)
@@ -100,7 +114,10 @@ func TestCIFAR100Convolutional(t *testing.T) {
 
 }
 func TestCIFAR100Dense(t *testing.T) {
-	//rand.Seed(time.Now().UnixNano())
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+
 	rand.Seed(4)
 
 	hln1 := 50

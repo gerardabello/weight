@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"gitlab.com/gerardabello/weight"
+	"github.com/gerardabello/weight"
 )
 
 func Open(base string) (*weight.PairSet, error) {

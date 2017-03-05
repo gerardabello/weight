@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight/tensor"
 )
 
 //TensorSet is just a simple Dataset created from two tensor arrays: the data and the expected answers

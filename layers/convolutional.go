@@ -9,8 +9,8 @@ import (
 	"github.com/gonum/blas"
 	"github.com/gonum/blas/blas64"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/tensor"
 )
 
 type ConvolutionalLayer struct {

@@ -7,7 +7,7 @@ import (
 	"image"
 	"image/png"
 
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight/tensor"
 )
 
 //Encode images to png/base64 if marshaling to json

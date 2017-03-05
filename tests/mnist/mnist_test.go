@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/costs"
-	"gitlab.com/gerardabello/weight/debug"
-	"gitlab.com/gerardabello/weight/layers"
-	"gitlab.com/gerardabello/weight/loaders/mnist"
-	"gitlab.com/gerardabello/weight/training"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/costs"
+	"github.com/gerardabello/weight/debug"
+	"github.com/gerardabello/weight/layers"
+	"github.com/gerardabello/weight/loaders/mnist"
+	"github.com/gerardabello/weight/training"
 )
 
 func TestMNISTLeNet1Fast(t *testing.T) {
@@ -215,7 +215,10 @@ func TestMNISTDense(t *testing.T) {
 
 func TestMNISTLinear(t *testing.T) {
 
-	//rand.Seed(time.Now().UnixNano())
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+
 	rand.Seed(4)
 
 	net, err := layers.NewSequentialNet(

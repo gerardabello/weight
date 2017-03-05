@@ -1,6 +1,6 @@
 package weight
 
-import "gitlab.com/gerardabello/weight/tensor"
+import "github.com/gerardabello/weight/tensor"
 
 //PairSet binds a Train and a Test Set together.
 type PairSet struct {

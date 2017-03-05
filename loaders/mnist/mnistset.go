@@ -7,8 +7,8 @@ import (
 	"os"
 	"sync"
 
-	"gitlab.com/gerardabello/weight/loaders/utils/idx"
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight/loaders/utils/idx"
+	"github.com/gerardabello/weight/tensor"
 )
 
 type MNISTSet struct {

@@ -1,5 +1,5 @@
 # Weight
-Weight is a neural network library written in Go that focuses on portability and ease of use. It is still in heavy development so API could change.
+Weight is a neural network library written in Go that focuses on portability and ease of use.
 
 The library has three main parts:
 * The `Tensor` struct

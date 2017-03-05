@@ -1,6 +1,6 @@
 package weight
 
-import "gitlab.com/gerardabello/weight/tensor"
+import "github.com/gerardabello/weight/tensor"
 
 //CostFunc is an object capable of computing the loss value given a result and the correct answer
 type CostFunc interface {

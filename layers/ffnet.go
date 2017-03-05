@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/debug"
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/debug"
+	"github.com/gerardabello/weight/tensor"
 )
 
 //FFNode is a node to be used with FFNet

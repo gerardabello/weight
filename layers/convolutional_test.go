@@ -8,8 +8,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/tensor"
 )
 
 func TestConvRandomWeightsMean(t *testing.T) {

@@ -4,8 +4,8 @@ import (
 	"path/filepath"
 	"reflect"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/tensor"
 )
 
 func OpenCIFAR100(base string) (*weight.PairSet, error) {

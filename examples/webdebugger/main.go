@@ -1,12 +1,12 @@
 package main
 
 import (
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/costs"
-	"gitlab.com/gerardabello/weight/debug"
-	"gitlab.com/gerardabello/weight/layers"
-	"gitlab.com/gerardabello/weight/loaders/cifar"
-	"gitlab.com/gerardabello/weight/training"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/costs"
+	"github.com/gerardabello/weight/debug"
+	"github.com/gerardabello/weight/layers"
+	"github.com/gerardabello/weight/loaders/cifar"
+	"github.com/gerardabello/weight/training"
 )
 
 func main() {
@@ -47,7 +47,7 @@ func main() {
 
 func createTestNet() weight.BPLearnerLayer {
 	//New a layer with 3 convolutional layers (16 kernels each) and 2 dense layers (300 neurons each). Input size 28x28 and 10 labels, as we are going to use mnist dataset.
-	net := layers.NewCRPBlocks([]int{32,32,2},3,12,3)
-  
+	net := layers.NewCRPBlocks([]int{32, 32, 2}, 3, 12, 3)
+
 	return net
 }

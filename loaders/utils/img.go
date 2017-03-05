@@ -7,7 +7,7 @@ import (
 	_ "image/png"
 	"os"
 
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight/tensor"
 )
 
 const (

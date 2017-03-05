@@ -7,11 +7,11 @@ import (
 	"os"
 	"strings"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/costs"
-	"gitlab.com/gerardabello/weight/layers"
-	"gitlab.com/gerardabello/weight/loaders/mnist"
-	"gitlab.com/gerardabello/weight/training"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/costs"
+	"github.com/gerardabello/weight/layers"
+	"github.com/gerardabello/weight/loaders/mnist"
+	"github.com/gerardabello/weight/training"
 )
 
 func main() {

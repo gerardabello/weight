@@ -4,8 +4,8 @@ import (
 	"math"
 	"math/rand"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/tensor"
 )
 
 //DenseLayer computes each output using a weighted sum of all inputs plus a bias

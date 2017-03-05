@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight/tensor"
 )
 
 func benchmarkConvLayerActivation(b *testing.B, size int, depth int) {

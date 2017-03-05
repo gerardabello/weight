@@ -1,6 +1,6 @@
 package weight
 
-import "gitlab.com/gerardabello/weight/tensor"
+import "github.com/gerardabello/weight/tensor"
 
 //Layer is any object that accepts tensor.Tensor and returns tensor.Tensor.
 //Each tensor.Tensor has a shape specified by GetSize. Layers only accept a specific shape. If any shape does not match the requirements the Layer will return error on Activate.

@@ -3,7 +3,7 @@ package tensor
 import (
 	"io"
 
-	"gitlab.com/gerardabello/weight/loaders/utils/idx"
+	"github.com/gerardabello/weight/loaders/utils/idx"
 )
 
 func (t *Tensor) Marshal(w io.Writer) error {

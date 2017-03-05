@@ -5,8 +5,8 @@ import (
 	"runtime"
 	"testing"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/tensor"
 )
 
 //https://cs.stanford.edu/people/karpathy/convnetjs/demo/cifar10.html

@@ -3,8 +3,8 @@ package augmentation
 import (
 	"math/rand"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/tensor"
 )
 
 type Scaler struct {

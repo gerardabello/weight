@@ -13,8 +13,8 @@ import (
 
 	"strconv"
 
-	"gitlab.com/gerardabello/weight/loaders/utils"
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight/loaders/utils"
+	"github.com/gerardabello/weight/tensor"
 )
 
 type img struct {

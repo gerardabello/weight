@@ -3,8 +3,8 @@ package costs
 import (
 	"math"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/tensor"
 )
 
 type SquareMeanCost struct {

@@ -7,13 +7,13 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/augmentation"
-	"gitlab.com/gerardabello/weight/costs"
-	"gitlab.com/gerardabello/weight/debug"
-	"gitlab.com/gerardabello/weight/layers"
-	"gitlab.com/gerardabello/weight/loaders/cifar"
-	"gitlab.com/gerardabello/weight/training"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/augmentation"
+	"github.com/gerardabello/weight/costs"
+	"github.com/gerardabello/weight/debug"
+	"github.com/gerardabello/weight/layers"
+	"github.com/gerardabello/weight/loaders/cifar"
+	"github.com/gerardabello/weight/training"
 )
 
 func TestCIFAR10Open(t *testing.T) {
@@ -36,6 +36,11 @@ func TestCIFAR10Open(t *testing.T) {
 //Forward time per example: ~8ms
 //Backprop time per example: ~11ms
 func TestCIFAR10ConvNetDemo(t *testing.T) {
+
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+
 	cl0 := layers.NewSquareConvolutionalLayer(32, 3, 16, 2, 1, 2)
 
 	cl1 := layers.NewSquareConvolutionalLayer(16, 16, 20, 2, 1, 2)
@@ -70,6 +75,11 @@ func TestCIFAR10ConvNetDemo(t *testing.T) {
 
 //They say they get arround 86% with local response normalization
 func TestCIFAR10TFTutorial(t *testing.T) {
+
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+
 	cl0 := layers.NewSquareConvolutionalLayer(24, 3, 64, 2, 1, 2)
 
 	cl1 := layers.NewSquareConvolutionalLayer(12, 64, 64, 2, 1, 2)
@@ -101,6 +111,10 @@ func TestCIFAR10TFTutorial(t *testing.T) {
 }
 
 func TestCIFAR10LeNet(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+
 	cl0 := layers.NewSquareConvolutionalLayer(32, 3, 20, 2, 1, 2)
 
 	cl1 := layers.NewSquareConvolutionalLayer(16, 20, 20, 2, 1, 2)
@@ -129,6 +143,11 @@ func TestCIFAR10LeNet(t *testing.T) {
 }
 
 func TestCIFAR10CaffeQuick(t *testing.T) {
+
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+
 	cl1 := layers.NewSquareConvolutionalLayer(32, 3, 32, 2, 1, 2)
 
 	cl2 := layers.NewSquareConvolutionalLayer(16, 32, 32, 2, 1, 2)
@@ -160,7 +179,10 @@ func TestCIFAR10CaffeQuick(t *testing.T) {
 
 }
 func TestCIFAR10Dense(t *testing.T) {
-	//rand.Seed(time.Now().UnixNano())
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+
 	rand.Seed(4)
 
 	hln1 := 50

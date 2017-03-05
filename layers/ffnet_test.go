@@ -3,7 +3,7 @@ package layers
 import (
 	"testing"
 
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight/tensor"
 )
 
 func TestGraphActivation(t *testing.T) {

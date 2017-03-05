@@ -1,6 +1,6 @@
 package layers
 
-import "gitlab.com/gerardabello/weight"
+import "github.com/gerardabello/weight"
 
 //News a block of Convolutionals, ReLUs and Pool
 func NewCRPBlock(inputSize []int, nConv, nKernels int) *FFNet {

@@ -1,21 +1,23 @@
 language: go
 
-go:
-  - tip
-
-before_install:
-  - go get github.com/stretchr/testify/assert
-
 before_script:
+  - cd $TRAVIS_BUILD_DIR/tests/mnist
   - wget http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz
   - wget http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz
   - wget http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz
   - wget http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz
+  - cd $TRAVIS_BUILD_DIR/tests/cifar
   - wget https://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz
   - wget https://www.cs.toronto.edu/~kriz/cifar-100-binary.tar.gz
   - tar -xvzf cifar-10-binary.tar.gz
   - tar -xvzf cifar-100-binary.tar.gz
+  - cd $TRAVIS_BUILD_DIR
+install:
+  - go get github.com/stretchr/testify/assert
+  - go get github.com/gorilla/websocket
+  - go get github.com/gonum/blas
+  - go get github.com/gonum/blas/blas64
 
 script:
-  - go test -v --short ./...
+  - travis_wait 60 go test -v -timeout 1h --short ./...
 

@@ -5,8 +5,8 @@ import (
 	"math/rand"
 	"sync"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/tensor"
 )
 
 //ShiftMethod defines the method used to update parameters in each layer

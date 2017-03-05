@@ -4,12 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"runtime"
 	"sync"
 	"time"
 
-	"gitlab.com/gerardabello/weight"
-	"gitlab.com/gerardabello/weight/debug"
+	"github.com/gerardabello/weight"
+	"github.com/gerardabello/weight/debug"
 )
 
 //BPTrainer trains a network given a train set and a learning configuration. It also returns debug information to monitor the process
@@ -55,7 +54,7 @@ func NewBPTrainer(config LearningConfig, data *weight.PairSet, net weight.BPLear
 	t.beta1 = 0.9   // used in adam
 	t.beta2 = 0.999 // used in adam
 
-	t.numRoutines = runtime.NumCPU()
+	t.numRoutines = 4
 
 	return &t
 }
@@ -133,7 +132,7 @@ func (t *BPTrainer) Train() error {
 	}
 
 	if t.config.BatchSize%t.numRoutines != 0 {
-		return fmt.Errorf("Batch size (%d) should be a multiple of the number of goroutines (%d). By default this trainer uses as many goroutines as CPU cores. If you want to use a fixed value use SetNumGoroutines(int) \n", t.config.BatchSize, t.numRoutines)
+		return fmt.Errorf("Batch size (%d) should be a multiple of the number of goroutines (%d). By default this trainer uses 4 goroutines. If you want to use a fixed value use SetNumGoroutines(int)", t.config.BatchSize, t.numRoutines)
 	}
 
 	var layerInfo chan []*debug.LayerInfo
@@ -320,11 +319,11 @@ func (t *BPTrainer) Train() error {
 				}
 
 				/*
-					fmt.Printf("\rTrainAccuracy:%.4f TrainLoss:%.6f TestAccuracy:%.4f --- \n",
-						float64(epochCorrectTrains)/float64(t.data.TrainSet.GetSetSize()),
-						epochTrainLoss/float64(t.data.TrainSet.GetSetSize()),
-						accuracy,
-					)
+				     fmt.Printf("\rTrainAccuracy:%.4f TrainLoss:%.6f TestAccuracy:%.4f --- \n",
+				     float64(epochCorrectTrains)/float64(t.data.TrainSet.GetSetSize()),
+				     epochTrainLoss/float64(t.data.TrainSet.GetSetSize()),
+				     accuracy,
+				   )
 				*/
 
 				testInfo <- &debug.TestInfo{

@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"sync"
 
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight/tensor"
 )
 
 type CIFAR struct {

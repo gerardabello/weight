@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	"gitlab.com/gerardabello/weight/debug"
-	"gitlab.com/gerardabello/weight/tensor"
+	"github.com/gerardabello/weight/debug"
+	"github.com/gerardabello/weight/tensor"
 )
 
 type BaseLayer struct {
