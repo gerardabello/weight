@@ -1,4 +1,4 @@
-# Weight
+# Weight ![build](https://travis-ci.org/gerardabello/weight.svg?branch=master)
 Weight is a neural network library written in Go that focuses on portability and ease of use.
 
 The library has three main parts:
